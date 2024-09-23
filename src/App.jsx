@@ -1,4 +1,4 @@
-// src/App.js
+// src/App.js created by hassan
 import React from 'react';
 import Header from './Components/Header/index';
 import LandingPage from './Components/LandingPage/index';
