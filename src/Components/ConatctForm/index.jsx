@@ -8,8 +8,7 @@ const ContactForm = () => {
         <h2 className="text-[#229799] text-lg font-bold uppercase mb-2">Contact</h2>
         <h1 className="text-3xl font-bold mb-4">I'd Love To Hear From You.</h1>
         <p className="text-gray-400 mb-8">
-          Lorem ipsum Do commodo in proident enim in dolor cupidatat adipisicing dolore officia nisi aliqua incididunt. 
-          Ut veniam lorem ipsum consectetur ut in eu do.
+        Whether you have a question, want to discuss a potential collaboration, or just want to say hello, feel free to reach out. Please use the form below to send me a message, and I will get back to you as soon as possible.
         </p>
         
         <form className="space-y-4 max-w-lg mx-auto">
@@ -39,7 +38,7 @@ const ContactForm = () => {
             <FiMapPin /> {/* React icon for location */}
           </div>
           <h4 className="text-[#229799] mb-1 font-bold uppercase">Where to find me</h4>
-          <p className="text-white text-center">1600 Amphitheatre Parkway <br /> Mountain View, CA <br /> 94043 US</p>
+          <p className="text-white text-center">Lahore, Punjab, Pakistan</p>
         </div>
 
         <div className="mb-8 md:mb-0 flex flex-col items-center">
@@ -47,7 +46,7 @@ const ContactForm = () => {
             <FiMail /> {/* React icon for email */}
           </div>
           <h4 className="text-[#229799] mb-1 font-bold uppercase">Email me at</h4>
-          <p className="text-white text-center">someone@kardswebsite.com <br /> info@kardswebsite.com</p>
+          <p className="text-white text-center">hjamshaid81@gmail.com</p>
         </div>
 
         <div className="flex flex-col items-center">
@@ -56,9 +55,7 @@ const ContactForm = () => {
           </div>
           <h4 className="text-[#229799] mb-1 font-bold uppercase">Call me at</h4>
           <p className="text-white text-center">
-            Phone: (+63) 555 1212 <br />
-            Mobile: (+63) 555 0100 <br />
-            Fax: (+63) 555 0101
+            Phone: (+92) 312 4384133
           </p>
         </div>
       </div>

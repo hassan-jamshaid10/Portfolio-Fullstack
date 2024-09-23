@@ -21,7 +21,9 @@ const AboutMe = () => {
           <div className="w-full md:w-1/2 px-4 mb-8 md:mb-0">
             <h2 className="text-xl font-bold mb-4 text-[#229799]">Profile</h2> {/* Updated to #229799 */}
             <p className="text-gray-600 mb-4">
-              Lorem ipsum Qui veniam ut consequat ex ullamco nulla in non ut esse in magna sint minim officia consectetur.
+  
+  I am a full-stack developer and 3D designer with a strong background in UI/UX design. I specialize in building dynamic and responsive applications using technologies like React, Spring Boot, JavaScript, TypeScript, and SQL. 
+
             </p>
             <ul className="text-gray-600">
               <li><span className="font-bold">Fullname:</span> Hassan Jamshaid</li>

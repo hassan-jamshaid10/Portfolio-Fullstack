@@ -8,7 +8,7 @@ const LandingPage = () => {
     <div className="relative flex flex-col h-screen bg-black text-white">
       <div className="flex flex-col items-center justify-center flex-grow text-center space-y-5">
         <h1 className="text-[#48CFCB] text-3xl mb-4">Hello, World.</h1>
-        <h2 className="text-6xl font-bold text-white">I'm Hassan Jamshaid.</h2>
+        <h2 className="text-6xl md:text-6xl font-bold text-white">I'm Hassan Jamshaid.</h2> {/* Adjusted for mobile view */}
         <p className="text-lg mt-2 tracking-wider text-white">
           | FULL STACK DEVELOPER | UI/UX DESIGNER | 3D DESIGNER |
         </p>
@@ -22,7 +22,7 @@ const LandingPage = () => {
       </div>
 
       {/* Social Icons with increased spacing */}
-      <div className="flex justify-center space-x-6 absolute bottom-4 w-full"> {/* Increased spacing to 'space-x-6' */}
+      <div className="flex justify-center space-x-6 absolute bottom-4 w-full">
         <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#229799] transition-colors duration-300">
           <FaGithub size={24} />
         </a>
