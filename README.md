@@ -47,16 +47,12 @@ To run this project locally, follow these steps:
    ```bash
    git clone https://github.com/<your-github-username>/<repository-name>.git
 
-2. **Navigate into the project directory:**
-cd <repository-name>
+2. **Navigate into the project directory and deployment:**
+     ```bash
+   cd <repository-name>
+   npm run dev
 
-3.**Install the dependencies:**
-npm install
-
-4.**Start the development server:**
-npm run dev
-
-**Deployment**
+## Deployment
 This project is deployed on Vercel. You can view the live version of the application here.
 
 To deploy your own version of this project on Vercel:
@@ -65,10 +61,10 @@ Sign up at Vercel.
 Import your GitHub repository into Vercel.
 Follow the on-screen instructions to deploy.
 
-**License**
+## License
 This project is licensed under the MIT License. Feel free to use and modify it for your own projects!
 
-**Contact**
+## Contact
 For any inquiries or feedback, feel free to reach out:
 
 Email: hjamshaid81@gmail.com<br>
