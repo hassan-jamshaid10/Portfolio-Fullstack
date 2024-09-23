@@ -1,6 +1,7 @@
 import React from 'react';
 import { FiArrowDown } from 'react-icons/fi';
-import { FaGithub, FaLinkedin, FaInstagram, FaCode } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaInstagram } from 'react-icons/fa';
+import { SiUpwork } from 'react-icons/si';
 
 const LandingPage = () => {
   return (
@@ -28,8 +29,8 @@ const LandingPage = () => {
         <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#229799] transition-colors duration-300">
           <FaLinkedin size={24} />
         </a>
-        <a href="https://leetcode.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#229799] transition-colors duration-300">
-          <FaCode size={24} />
+        <a href="https://upwork.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#229799] transition-colors duration-300">
+          <SiUpwork size={24} />
         </a>
         <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#229799] transition-colors duration-300">
           <FaInstagram size={24} />

@@ -5,6 +5,8 @@ import Experience from './Components/Experienece/index';
 import LanguagesTools from './Components/LanguagesTools/index';
 import Offerings from './Components/Offerings/index';
 import Projects from './Components/Projects/index';
+import ContactForm from './Components/ConatctForm/index';
+import Footer from './Components/Footer/index';
 const App = () => {
   return (
   <>
@@ -12,8 +14,10 @@ const App = () => {
 <AboutMe/>
 <Experience/>
 <LanguagesTools/>
-<Offerings/>
 <Projects/>
+<Offerings/>
+<ContactForm/>
+<Footer/>
   </>
   )
 }

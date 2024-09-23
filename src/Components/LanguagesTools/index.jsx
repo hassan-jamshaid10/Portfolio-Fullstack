@@ -162,6 +162,10 @@ const LanguagesTools = () => {
               <p className="mt-2">Blender</p>
             </div>
             <div className="text-center">
+              <FaFigma size={50} className="text-black mx-auto" />
+              <p className="mt-2">Figma</p>
+            </div>
+            <div className="text-center">
               <FaGithub size={50} className="text-black mx-auto" />
               <p className="mt-2">GitHub</p>
             </div>
