@@ -4,7 +4,7 @@ import { FiArrowDown } from 'react-icons/fi';
 
 const Offerings = () => {
   return (
-    <section className="py-12 bg-black text-black">
+    <section className="py-12 text-black" style={{ backgroundColor: '#F5F5F5' }}>
       <div className="max-w-5xl mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-12">
