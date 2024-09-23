@@ -5,12 +5,14 @@ import { SiUpwork } from "react-icons/si";
 const Footer = () => {
   return (
     <footer className="bg-black text-white py-4">
-      <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
+      <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
         {/* Left side - Copyright */}
-        <p className="text-gray-400">&copy; {new Date().getFullYear()} My Portfolio | Designed By <a className="text-white hover:text-[#48CFCB]">Hassan</a></p>
+        <p className="text-gray-400 text-center md:text-left mb-4 md:mb-0">
+          &copy; {new Date().getFullYear()} My Portfolio | Designed By <a className="text-white hover:text-[#48CFCB]" href="#!">Hassan</a>
+        </p>
 
         {/* Right side - Social media icons */}
-        <div className="flex space-x-4">
+        <div className="flex justify-center md:justify-end space-x-4">
           <a href="https://github.com/hassan-jamshaid10" target="_blank" rel="noopener noreferrer" className="hover:text-[#48CFCB]">
             <FaGithub className="text-2xl" />
           </a>

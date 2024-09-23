@@ -23,16 +23,16 @@ const LandingPage = () => {
 
       {/* Social Icons with increased spacing */}
       <div className="flex justify-center space-x-6 absolute bottom-4 w-full">
-        <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#229799] transition-colors duration-300">
+        <a href="https://github.com/hassan-jamshaid10" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#229799] transition-colors duration-300">
           <FaGithub size={24} />
         </a>
-        <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#229799] transition-colors duration-300">
+        <a href="https://www.linkedin.com/in/hassanjamshaid10" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#229799] transition-colors duration-300">
           <FaLinkedin size={24} />
         </a>
-        <a href="https://upwork.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#229799] transition-colors duration-300">
+        <a href="https://www.upwork.com/freelancers/~017d58238682e54ca8?mp_source=share" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#229799] transition-colors duration-300">
           <SiUpwork size={24} />
         </a>
-        <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#229799] transition-colors duration-300">
+        <a href="https://www.instagram.com/hassan_.jamshaid/?__pwa=1" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#229799] transition-colors duration-300">
           <FaInstagram size={24} />
         </a>
       </div>
