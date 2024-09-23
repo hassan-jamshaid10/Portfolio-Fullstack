@@ -3,6 +3,12 @@ import { FaLaptopCode, FaPalette, FaCube } from 'react-icons/fa';
 import { FiArrowDown } from 'react-icons/fi';
 
 const Offerings = () => {
+    const scrollToContact = () => {
+        const contactSection = document.getElementById('contact');
+        if (contactSection) {
+          contactSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      };
   return (
     <section className="py-12 text-black" style={{ backgroundColor: '#F5F5F5' }}>
       <div className="max-w-5xl mx-auto px-4">
@@ -43,7 +49,7 @@ const Offerings = () => {
 
         {/* Contact Button */}
         <div className="flex justify-center mt-8">
-          <button className="flex items-center px-8 py-4 text-lg font-semibold text-white bg-black border-2 border-white rounded-lg hover:text-[#229799] hover:bg-white hover:border-[#229799] transition-all duration-300 ease-in-out">
+          <button  onClick={scrollToContact} className="flex items-center px-8 py-4 text-lg font-semibold text-white bg-black border-2 border-white rounded-lg hover:text-[#229799] hover:bg-white hover:border-[#229799] transition-all duration-300 ease-in-out">
             Contact Me <FiArrowDown className="ml-2" />
           </button>
         </div>
