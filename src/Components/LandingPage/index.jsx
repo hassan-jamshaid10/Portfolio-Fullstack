@@ -9,7 +9,7 @@ const LandingPage = () => {
         <h1 className="text-[#48CFCB] text-3xl mb-4">Hello, World.</h1> 
         <h2 className="text-6xl font-bold text-white">I'm Hassan Jamshaid.</h2>
         <p className="text-lg mt-2 tracking-wider text-white">
-          | FULL STACK DEVELOPER | UI/UX DESIGNER | 3D Designer |
+          | FULL STACK DEVELOPER | UI/UX DESIGNER | 3D DESIGNER |
         </p>
 
         {/* Button */}
