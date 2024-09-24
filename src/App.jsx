@@ -1,7 +1,7 @@
 // src/App.js created by Hassan
 import React from 'react';
 import { Analytics } from "@vercel/analytics/react";
-
+import { SpeedInsights } from "@vercel/speed-insights/next";
 // Importing Components
 import Header from './Components/Header/index';
 import LandingPage from './Components/LandingPage/index';
@@ -18,7 +18,7 @@ const App = () => {
   return (
     <>
       <Analytics />
-
+<SpeedInsights/>
       {/* Main Sections */}
       <section id="home">
         <Layout />
