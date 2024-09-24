@@ -14,7 +14,7 @@ import { Analytics } from "@vercel/analytics/react"
 const App = () => {
   return (
     <>
-    <Analytics>
+    <Analytics/>
 <srction id="home">
       <Layout/>
       </srction>
@@ -37,7 +37,6 @@ const App = () => {
           <ContactForm />
         </section>
       <Footer />
-      </Analytics>
     </>
   );
 };
