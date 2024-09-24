@@ -10,9 +10,11 @@ import Projects from './Components/Projects/index';
 import ContactForm from './Components/ConatctForm';
 import Footer from './Components/Footer/index';
 import Layout from './AppLayout/Layout';
+import { Analytics } from "@vercel/analytics/react"
 const App = () => {
   return (
     <>
+    <Analytics>
 <srction id="home">
       <Layout/>
       </srction>
@@ -35,6 +37,7 @@ const App = () => {
           <ContactForm />
         </section>
       <Footer />
+      </Analytics>
     </>
   );
 };
