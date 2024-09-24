@@ -39,7 +39,7 @@ const AboutMe = () => {
             <ul className="text-gray-600">
               <li><span className="font-bold">Fullname:</span> Hassan Jamshaid</li>
               <li><span className="font-bold">Job:</span> Freelancer, Full-Stack Developer</li>
-              <li><span className="font-bold">Website:</span> www.Portfolio.com</li>
+              <li><span className="font-bold">Website:</span> www.hassanjamshaid.me</li>
               <li><span className="font-bold">Email:</span> hjamshaid81@gmail.com</li>
             </ul>
           </div>
