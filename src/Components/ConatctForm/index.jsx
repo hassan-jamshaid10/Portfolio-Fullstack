@@ -1,34 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { FiMapPin, FiMail, FiPhone } from "react-icons/fi";
 import emailjs from "emailjs-com";
+
+const contactInfo = [
+  {
+    id: 1,
+    icon: <FiMapPin />,
+    title: "Where to find me",
+    details: "Lahore, Punjab, Pakistan",
+  },
+  {
+    id: 2,
+    icon: <FiMail />,
+    title: "Email me at",
+    details: "hjamshaid81@gmail.com",
+  },
+  {
+    id: 3,
+    icon: <FiPhone />,
+    title: "Call me at",
+    details: "Phone: (+92) 312 4384133",
+  },
+];
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "",
-    message: ""
+    message: "",
   });
   const [showPopup, setShowPopup] = useState(false);
+  const [errorPopup, setErrorPopup] = useState(false);
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     // Send email using EmailJS
-    emailjs.send("service_2y2ovci", "template_bfgvq39", formData, "mxAtLj58FZbHf8xO7")
+    emailjs
+      .send("service_2y2ovci", "template_bfgvq39", formData, "mxAtLj58FZbHf8xO7")
       .then((response) => {
         console.log("Email sent successfully!", response.status, response.text);
         setShowPopup(true); // Show the popup
         setFormData({ name: "", email: "", subject: "", message: "" }); // Reset form data
-        
+
         // Hide the popup after 3 seconds
         setTimeout(() => {
           setShowPopup(false);
@@ -36,6 +59,12 @@ const ContactForm = () => {
       })
       .catch((err) => {
         console.error("Failed to send email. Error:", err);
+        setErrorPopup(true); // Show error popup
+
+        // Hide the error popup after 3 seconds
+        setTimeout(() => {
+          setErrorPopup(false);
+        }, 3000);
       });
   };
 
@@ -49,82 +78,72 @@ const ContactForm = () => {
         </p>
 
         <form className="space-y-4 max-w-lg mx-auto" onSubmit={handleSubmit}>
-          <input 
-            className="w-full px-4 py-2 bg-gray-800 text-white border-none outline-none focus:ring-2 focus:ring-pink-500 rounded" 
-            type="text" 
+          <input
+            className="w-full px-4 py-2 bg-gray-800 text-white border-none outline-none focus:ring-2 focus:ring-pink-500 rounded"
+            type="text"
             name="name"
-            placeholder="Name" 
+            placeholder="Name"
             value={formData.name}
             onChange={handleChange}
             required
           />
-          <input 
-            className="w-full px-4 py-2 bg-gray-800 text-white border-none outline-none focus:ring-2 focus:ring-pink-500 rounded" 
-            type="email" 
+          <input
+            className="w-full px-4 py-2 bg-gray-800 text-white border-none outline-none focus:ring-2 focus:ring-pink-500 rounded"
+            type="email"
             name="email"
-            placeholder="Email" 
+            placeholder="Email"
             value={formData.email}
             onChange={handleChange}
             required
           />
-          <input 
-            className="w-full px-4 py-2 bg-gray-800 text-white border-none outline-none focus:ring-2 focus:ring-pink-500 rounded" 
-            type="text" 
+          <input
+            className="w-full px-4 py-2 bg-gray-800 text-white border-none outline-none focus:ring-2 focus:ring-pink-500 rounded"
+            type="text"
             name="subject"
-            placeholder="Subject" 
+            placeholder="Subject"
             value={formData.subject}
             onChange={handleChange}
             required
           />
-          <textarea 
-            className="w-full h-32 px-4 py-2 bg-gray-800 text-white border-none outline-none focus:ring-2 focus:ring-pink-500 rounded" 
+          <textarea
+            className="w-full h-32 px-4 py-2 bg-gray-800 text-white border-none outline-none focus:ring-2 focus:ring-pink-500 rounded"
             name="message"
             placeholder="Message | add your name email at end of message"
             value={formData.message}
             onChange={handleChange}
             required
           ></textarea>
-          <button 
-            type="submit" 
-            className="w-full bg-black text-white font-bold py-2 px-4 rounded border border-white transition-all duration-300 hover:bg-[#229799]">
+          <button
+            type="submit"
+            className="w-full bg-black text-white font-bold py-2 px-4 rounded border border-white transition-all duration-300 hover:bg-[#229799]"
+          >
             Submit
           </button>
         </form>
 
-        {/* Conditional rendering for pop-up notification */}
+        {/* Conditional rendering for pop-up notifications */}
         {showPopup && (
-          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-black p-4 rounded shadow-lg z-50">
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-black p-4 rounded shadow-lg z-50" aria-live="assertive">
             Your message has been sent successfully!
+          </div>
+        )}
+        {errorPopup && (
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-500 text-white p-4 rounded shadow-lg z-50" aria-live="assertive">
+            Failed to send message. Please try again.
           </div>
         )}
       </div>
 
       <div className="mt-16 flex flex-col md:flex-row justify-around text-center px-4">
-        <div className="mb-8 md:mb-0 flex flex-col items-center">
-          <div className="text-[#48CFCB] mb-2 text-3xl">
-            <FiMapPin />
+        {contactInfo.map(({ id, icon, title, details }) => (
+          <div key={id} className="mb-8 md:mb-0 flex flex-col items-center">
+            <div className="text-[#48CFCB] mb-2 text-3xl">
+              {icon}
+            </div>
+            <h4 className="text-[#229799] mb-1 font-bold uppercase">{title}</h4>
+            <p className="text-white text-center">{details}</p>
           </div>
-          <h4 className="text-[#229799] mb-1 font-bold uppercase">Where to find me</h4>
-          <p className="text-white text-center">Lahore, Punjab, Pakistan</p>
-        </div>
-
-        <div className="mb-8 md:mb-0 flex flex-col items-center">
-          <div className="text-[#48CFCB] mb-2 text-3xl">
-            <FiMail />
-          </div>
-          <h4 className="text-[#229799] mb-1 font-bold uppercase">Email me at</h4>
-          <p className="text-white text-center">hjamshaid81@gmail.com</p>
-        </div>
-
-        <div className="flex flex-col items-center">
-          <div className="text-[#48CFCB] mb-2 text-3xl">
-            <FiPhone />
-          </div>
-          <h4 className="text-[#229799] mb-1 font-bold uppercase">Call me at</h4>
-          <p className="text-white text-center">
-            Phone: (+92) 312 4384133
-          </p>
-        </div>
+        ))}
       </div>
     </section>
   );

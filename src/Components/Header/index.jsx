@@ -1,8 +1,13 @@
 // src/components/Header.js
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Use useCallback to avoid re-creating this function on each render
+  const toggleMenu = useCallback(() => {
+    setIsMenuOpen(prevState => !prevState);
+  }, []);
 
   return (
     <header className="bg-black fixed w-full z-10">
@@ -23,7 +28,7 @@ const Header = () => {
             </div>
           </div>
           <div className="-mr-2 flex md:hidden">
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="bg-black inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:bg-gray-700 focus:text-white">
+            <button onClick={toggleMenu} className="bg-black inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:bg-gray-700 focus:text-white">
               <span className="sr-only">Open main menu</span>
               <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />

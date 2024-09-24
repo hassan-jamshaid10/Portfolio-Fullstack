@@ -1,5 +1,8 @@
-// src/App.js created by hassan
+// src/App.js created by Hassan
 import React from 'react';
+import { Analytics } from "@vercel/analytics/react";
+
+// Importing Components
 import Header from './Components/Header/index';
 import LandingPage from './Components/LandingPage/index';
 import AboutMe from './Components/Aboutme';
@@ -10,32 +13,35 @@ import Projects from './Components/Projects/index';
 import ContactForm from './Components/ConatctForm';
 import Footer from './Components/Footer/index';
 import Layout from './AppLayout/Layout';
-import { Analytics } from "@vercel/analytics/react"
+
 const App = () => {
   return (
     <>
-    <Analytics/>
-<srction id="home">
-      <Layout/>
-      </srction>
-        <section id="about">
-          <AboutMe />
-        </section>
-        <section id="experience">
-          <Experience />
-        </section>
-        <section id="languages">
-          <LanguagesTools />
-        </section>
-        <section id="projects">
-          <Projects />
-        </section>
-        <section id="services">
-          <Offerings />
-        </section>
-        <section id="contact">
-          <ContactForm />
-        </section>
+      <Analytics />
+
+      {/* Main Sections */}
+      <section id="home">
+        <Layout />
+      </section>
+      <section id="about">
+        <AboutMe />
+      </section>
+      <section id="experience">
+        <Experience />
+      </section>
+      <section id="languages">
+        <LanguagesTools />
+      </section>
+      <section id="projects">
+        <Projects />
+      </section>
+      <section id="services">
+        <Offerings />
+      </section>
+      <section id="contact">
+        <ContactForm />
+      </section>
+
       <Footer />
     </>
   );

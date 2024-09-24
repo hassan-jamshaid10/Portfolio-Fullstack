@@ -1,16 +1,15 @@
-// src/Components/LandingPage/index.js
-import React from 'react';
+import React, { useCallback } from 'react';
 import { FiArrowDown } from 'react-icons/fi';
 import { FaGithub, FaLinkedin, FaInstagram } from 'react-icons/fa';
 import { SiUpwork } from 'react-icons/si';
 
 const LandingPage = () => {
-  const scrollToAbout = () => {
+  const scrollToAbout = useCallback(() => {
     const aboutSection = document.getElementById('about');
     if (aboutSection) {
       aboutSection.scrollIntoView({ behavior: 'smooth' });
     }
-  };
+  }, []);
 
   return (
     <div className="relative flex flex-col h-screen bg-black text-white">
@@ -20,17 +19,14 @@ const LandingPage = () => {
         <p className="text-lg mt-2 tracking-wider text-white">
           | FULL STACK DEVELOPER | UI/UX DESIGNER | 3D DESIGNER |
         </p>
-
-        {/* Button with scroll functionality */}
         <button 
-          onClick={scrollToAbout} // Link to About Me section
+          onClick={scrollToAbout} 
           className="mt-6 px-8 py-4 text-lg bg-transparent border-2 border-white text-white hover:bg-[#229799] transition-all duration-300 ease-in-out"
         >
           More About Me <FiArrowDown className="inline-block ml-2" />
         </button>
       </div>
 
-      {/* Social Icons */}
       <div className="flex justify-center space-x-6 absolute bottom-4 w-full">
         <a href="https://github.com/hassan-jamshaid10" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#229799] transition-colors duration-300">
           <FaGithub size={24} />

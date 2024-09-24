@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import PropTypes from 'prop-types';
 
 const projects = [
-
   {
     title: 'Portfolio website',
     description: 'A comprehensive portfolio website designed to showcase my personal projects, technical skills, and professional experience. This site features an intuitive layout that highlights key projects I have worked on, providing visitors with insights into my development process and problem-solving abilities. Built with React and styled using Tailwind CSS, the website offers a responsive and visually appealing user experience. It serves not only as a showcase of my work but also as a platform for potential employers and clients to learn more about my expertise and approach to software development',
@@ -22,7 +22,7 @@ const projects = [
   },
   {
     title: 'Messaging App with Real-time Chat',
-    description: 'A social media app featuring user profiles, real-time chat functionality, and a dynamic feed.This is a feature-rich messaging app developed with React.js and Vite, featuring user authentication, real-time chat, group conversations, and an AI assistant powered by Gemini. The app includes a dashboard for online users, call logs, and customizable settings, all designed with Material UI and Tailwind CSS.',
+    description: 'A social media app featuring user profiles, real-time chat functionality, and a dynamic feed. This is a feature-rich messaging app developed with React.js and Vite, featuring user authentication, real-time chat, group conversations, and an AI assistant powered by Gemini. The app includes a dashboard for online users, call logs, and customizable settings, all designed with Material UI and Tailwind CSS.',
     githubLink: 'https://github.com/hassan-jamshaid10/MessagingAPP.git',
     image: '/Messagingapp.png'
   }
@@ -50,9 +50,12 @@ const Projects = () => {
 
 const ProjectCard = ({ project }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  
-  // Check if the description is long enough to need "Read More"
-  const isLongDescription = project.description.split(' ').length > 30; // Adjust the word count as needed
+
+  const checkLongDescription = (description) => {
+    return description.split(' ').length > 30; // Adjust the word count as needed
+  };
+
+  const isLongDescription = useMemo(() => checkLongDescription(project.description), [project.description]);
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md text-black">
@@ -67,7 +70,7 @@ const ProjectCard = ({ project }) => {
       </p>
       {isLongDescription && (
         <button
-          onClick={() => setIsExpanded(!isExpanded)}
+          onClick={() => setIsExpanded((prev) => !prev)}
           className="mt-2 text-[#229799] hover:underline block"
         >
           {isExpanded ? 'Read Less' : 'Read More'}
@@ -83,6 +86,15 @@ const ProjectCard = ({ project }) => {
       </a>
     </div>
   );
+};
+
+ProjectCard.propTypes = {
+  project: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    githubLink: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default Projects;

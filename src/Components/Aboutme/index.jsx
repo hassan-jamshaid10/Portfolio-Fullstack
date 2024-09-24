@@ -1,28 +1,25 @@
-// src/Components/AboutMe/index.js
-import React from 'react';
+import React, { useCallback } from 'react';
 
 const AboutMe = () => {
-  const scrollToContact = () => {
+  const scrollToContact = useCallback(() => {
     const contactSection = document.getElementById('contact');
     if (contactSection) {
       contactSection.scrollIntoView({ behavior: 'smooth' });
     }
-  };
+  }, []);
 
-  const downloadCV = () => {
-    // Create a temporary anchor element for downloading
+  const downloadCV = useCallback(() => {
     const link = document.createElement('a');
-    link.href = '/cv.pdf'; // Path to your CV PDF file
-    link.download = 'Hassan_Jamshaid_CV.pdf'; // Name of the downloaded file
+    link.href = '/abc.pdf';
+    link.download = 'Hassan_Jamshaid_CV.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  };
+  }, []);
 
   return (
     <section className="bg-white py-12 px-6">
       <div className="max-w-4xl mx-auto">
-        {/* About Section */}
         <div className="text-center mb-8">
           <p className="text-[#229799] uppercase tracking-widest">About</p>
           <h1 className="text-3xl font-bold mb-4 text-[#229799]">Let me introduce myself.</h1>
@@ -33,9 +30,7 @@ const AboutMe = () => {
           </p>
         </div>
 
-        {/* Profile and Skills Section */}
         <div className="flex flex-wrap -mx-4">
-          {/* Profile Section */}
           <div className="w-full md:w-1/2 px-4 mb-8 md:mb-0">
             <h2 className="text-xl font-bold mb-4 text-[#229799]">Profile</h2>
             <p className="text-gray-600 mb-4">
@@ -49,7 +44,6 @@ const AboutMe = () => {
             </ul>
           </div>
 
-          {/* Skills Section */}
           <div className="w-full md:w-1/2 px-4">
             <h2 className="text-xl font-bold mb-4 text-[#229799]">Skills</h2>
             <p className="text-gray-600 mb-4">
@@ -75,16 +69,15 @@ const AboutMe = () => {
           </div>
         </div>
 
-        {/* Buttons */}
         <div className="mt-8 flex justify-center space-x-4">
           <button 
-            onClick={scrollToContact} // Link to Contact Form section
+            onClick={scrollToContact} 
             className="border-2 border-[#229799] text-[#229799] px-6 py-2 font-bold hover:bg-[#48CFCB] hover:text-white transition"
           >
             Hire Me
           </button>
           <button 
-            onClick={downloadCV} // Function to download CV
+            onClick={downloadCV} 
             className="bg-[#229799] text-white px-6 py-2 font-bold hover:bg-[#48CFCB] transition"
           >
             Download CV
