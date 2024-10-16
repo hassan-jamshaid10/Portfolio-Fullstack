@@ -8,7 +8,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
         {/* Left side - Copyright */}
         <p className="text-gray-400 text-center md:text-left mb-4 md:mb-0">
-          &copy; {new Date().getFullYear()} My Portfolio | Designed By 
+          &copy; {new Date().getFullYear()} | Designed By 
           <a className="text-white hover:text-[#48CFCB]" href="#!"> Hassan</a>
         </p>
 
