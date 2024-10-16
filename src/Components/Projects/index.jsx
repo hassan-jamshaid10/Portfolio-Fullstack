@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 
 const projects = [
   {
-    title: 'Portfolio website',
-    description: 'A comprehensive portfolio website designed to showcase my personal projects, technical skills, and professional experience. This site features an intuitive layout that highlights key projects I have worked on, providing visitors with insights into my development process and problem-solving abilities. Built with React and styled using Tailwind CSS, the website offers a responsive and visually appealing user experience. It serves not only as a showcase of my work but also as a platform for potential employers and clients to learn more about my expertise and approach to software development',
-    githubLink: 'https://github.com/hassan-jamshaid10/Portfolio-Fullstack.git',
-    image: '/portfolio.png'
+    title: 'XORA - AI Video Editing App Frontend',
+    description: 'Xora - AI Video Editing App Landing Page Xora is an AI-powered video editing app designed for web and mobile platforms. This landing page showcases its key features, pricing plans, and download options, all in a responsive and modern design built with React.js and Tailwind CSS.',
+    githubLink: 'https://saasproject.hassanjamshaid.me/',
+    image: '/xora.png'
   },
   {
     title: 'Ai Trip Planner Backend',
@@ -82,7 +82,7 @@ const ProjectCard = ({ project }) => {
         rel="noopener noreferrer"
         className="mt-4 inline-block bg-black text-white py-2 px-4 rounded border border-[#229799] hover:bg-[#229799] transition"
       >
-        View on GitHub
+        View
       </a>
     </div>
   );
