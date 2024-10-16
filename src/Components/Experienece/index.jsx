@@ -1,6 +1,6 @@
 import React from 'react';
 
-const NetsolLogo = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8NC5GPQILsVkZ3gXRigqc6d9Bb8sMQ1cfLQ&s";
+const NetsolLogo = "./netsollogo.png";
 const ucpLogo = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfMk8Z0fTrskOLvS0W0IE5nj_CPw1ou2MQUQ&s";
 const Freelancelogo = "https://cdn.dribbble.com/users/2059160/screenshots/4413086/media/2dfeaf608392e326b8078431e1ac9f37.jpg?resize=400x300&vertical=center";
 
