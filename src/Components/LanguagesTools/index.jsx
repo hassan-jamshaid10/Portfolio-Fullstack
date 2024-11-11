@@ -1,12 +1,12 @@
 import React from 'react';
 import { 
-  FaReact, FaJava, FaPhp, FaHtml5, FaCss3, FaFigma, FaGithub, FaNodeJs 
+  FaReact, FaJava, FaPhp, FaHtml5, FaCss3, FaFigma, FaGithub, FaNodeJs
 } from 'react-icons/fa';
 import { 
   SiXampp, SiRedux, SiJavascript, SiTypescript, SiPostgresql, SiMysql, 
   SiMongodb, SiRedis, SiFirebase, SiSpringboot, SiApachekafka, SiCplusplus, 
   SiVisualstudiocode, SiIntellijidea, SiPostman, SiVisualstudio, 
-  SiTailwindcss, SiChakraui, SiAntdesign 
+  SiTailwindcss, SiChakraui, SiAntdesign ,SiNextdotjs,SiThreedotjs
 } from 'react-icons/si';
 import { RiBarChartHorizontalFill } from 'react-icons/ri';
 
@@ -20,9 +20,9 @@ const techData = {
     { icon: <SiJavascript />, name: "JavaScript", color: "#F7DF1E" },
     { icon: <SiTypescript />, name: "TypeScript", color: "#007ACC" },
     { icon: <SiChakraui />, name: "Chakra UI", color: "#319795" },
-    { src: './materialui.png', name: "Material UI" },
+    { icon: <SiNextdotjs/>, name: "Next Js" },
     { icon: <SiAntdesign />, name: "Ant Design", color: "#0170FE" },
-    { src: './bootstrap.png', name: "Bootstrap" },
+    { icon: <SiThreedotjs/>, name: "Three js" },
     { icon: <RiBarChartHorizontalFill />, name: "Chart.js", color: "#FF6384" }
   ],
   backend: [
