@@ -10,7 +10,7 @@ const AboutMe = () => {
 
   const downloadCV = useCallback(() => {
     const link = document.createElement('a');
-    link.href = '/abc.pdf';
+    link.href = '/HassanJamshiadResume.pdf';
     link.download = 'Hassan_Jamshaid_CV.pdf';
     document.body.appendChild(link);
     link.click();
