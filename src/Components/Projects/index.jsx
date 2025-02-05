@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 
 const projects = [
   {
+    title: 'Trade An Idea',
+    description: 'Trade an Idea is a platform where users can share, comment on, and categorize innovative ideas. It features OTP authentication, an AI-powered originality check, and SDG-based categorization. Built with React, Node.js, MySQL, and a fine-tuned LiteLlama AI model. 🚀',
+    githubLink: 'https://github.com/hassan-jamshaid10/TradeAnIdea.git',
+    image: '/Tade.png'
+  },
+  {
     title: 'XORA - AI Video Editing App Frontend',
     description: 'Xora - AI Video Editing App Landing Page Xora is an AI-powered video editing app designed for web and mobile platforms. This landing page showcases its key features, pricing plans, and download options, all in a responsive and modern design built with React.js and Tailwind CSS.',
     githubLink: 'https://saasproject.hassanjamshaid.me/',
     image: '/xora.png'
-  },
-  {
-    title: 'Ai Trip Planner Backend',
-    description: 'A Spring Boot service with Spring Security 6 and JWT authentication, offering secure user management, trip planning, and bookings. Data is stored in PostgreSQL, with Gemini AI providing intelligent trip recommendations.',
-    githubLink: 'https://github.com/hassan-jamshaid10/Ai-Trip-Planner-Backend.git',
-    image: '/Trip.webp'
   },
   {
     title: 'E-commerce Product Management App',
