@@ -9,11 +9,18 @@ const projects = [
     image: '/Trade.png'
   },
   {
+    title: 'ChatBox',
+    description: 'ChatBox App: A web-based messaging app with user authentication, message sending (text, emojis, images), and profile management. Built with HTML, CSS, JavaScript, PHP, and MySQL for data storage.',
+    githubLink: 'https://github.com/hassan-jamshaid10/ChatBox.git',
+    image: '/GITPIC.png'
+  },
+  {
     title: 'XORA - AI Video Editing App Frontend',
     description: 'Xora - AI Video Editing App Landing Page Xora is an AI-powered video editing app designed for web and mobile platforms. This landing page showcases its key features, pricing plans, and download options, all in a responsive and modern design built with React.js and Tailwind CSS.',
     githubLink: 'https://saasproject.hassanjamshaid.me/',
     image: '/xora.png'
   },
+ 
   {
     title: 'E-commerce Product Management App',
     description: 'An Ecommerce Management System developed with React.js and Vite, featuring user authentication and CRUD operations on products. Styled with Ant Design and Tailwind CSS, the application fetches product data from an external API (api.freeapi) to provide a seamless user experience.',
@@ -26,6 +33,7 @@ const projects = [
     githubLink: 'https://github.com/hassan-jamshaid10/MessagingAPP.git',
     image: '/Messagingapp.png'
   }
+
 ];
 
 const Projects = () => {
