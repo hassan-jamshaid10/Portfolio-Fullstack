@@ -6,7 +6,7 @@ const projects = [
     title: 'Trade An Idea',
     description: 'Trade an Idea is a platform where users can share, comment on, and categorize innovative ideas. It features OTP authentication, an AI-powered originality check, and SDG-based categorization. Built with React, Node.js, MySQL, and a fine-tuned LiteLlama AI model. 🚀',
     githubLink: 'https://github.com/hassan-jamshaid10/TradeAnIdea.git',
-    image: '/Tade.png'
+    image: '/Trade.png'
   },
   {
     title: 'XORA - AI Video Editing App Frontend',
