@@ -20,7 +20,7 @@ const AboutMe = () => {
   }, []);
 
   const stats = [
-    { icon: <FaCode />, number: "50+", label: "Projects Completed", color: "from-blue-400 to-cyan-500" },
+    { icon: <FaCode />, number: "20+", label: "Projects Completed", color: "from-blue-400 to-cyan-500" },
     { icon: <FaBrain />, number: "2+", label: "Years Experience", color: "from-purple-400 to-pink-500" },
     { icon: <FaRocket />, number: "100%", label: "Client Satisfaction", color: "from-emerald-400 to-teal-500" },
     { icon: <FaLightbulb />, number: "24/7", label: "Problem Solving", color: "from-orange-400 to-red-500" }
