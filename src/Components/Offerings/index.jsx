@@ -21,10 +21,10 @@ const offeringsData = [
   },
   {
     id: 3,
-    title: "Custom Mobile Web",
-    description: "Responsive mobile-first web applications that work seamlessly across all devices. Optimized for mobile performance and user experience.",
+    title: "Custom Mobile Development",
+    description: "Responsive mobile-first cross platform applications that work seamlessly across all devices. Optimized for mobile performance and user experience.",
     icon: <FaMobile />,
-    features: ["Mobile-First Design", "Progressive Web Apps", "Touch Optimization", "Performance Tuning", "Cross-Platform"],
+    features: ["Mobile-First Design", "Progressive mobile Apps", "Touch Optimization", "Performance Tuning", "Cross-Platform"],
     gradient: "from-emerald-400 to-teal-500"
   },
   {
