@@ -1,14 +1,17 @@
 import React from 'react';
 import Header from '../../Components/Header/index';
-import LandingPage from '../../Components/LandingPage/index';
 
-const Layout = () => {
+const Layout = ({ children }) => {
   return (
-    <div className="min-h-screen bg-black text-white">
-      <Header />
-      <main className="pt-16"> {/* Add padding to prevent overlap with the header */}
-        <LandingPage />
-      </main>
+    <div className="relative min-h-screen bg-black text-white overflow-hidden">
+      
+      {/* Page Content */}
+      <div className="relative z-10">
+        <Header />
+        <main className="pt-20">
+          {children}
+        </main>
+      </div>
     </div>
   );
 };
