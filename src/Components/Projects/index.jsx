@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
 import { FiExternalLink, FiGithub, FiEye, FiCode, FiZap, FiStar } from "react-icons/fi";
 import { FaReact, FaNodeJs, FaDatabase, FaAws, FaDocker, FaWordpress } from "react-icons/fa";
 
 const projects = [
-
   {
     id: 1,
     title: "Pakistan Arab Youth Organization",
@@ -54,7 +53,6 @@ const projects = [
     features: ["Real-time Data", "Portfolio Tracking", "Advanced Charts", "Risk Management", "Alerts System"]
   },
   
-
   {
     id: 6,
     title: "Pulse AI - Hospital Management",
@@ -107,43 +105,48 @@ const projects = [
 
 const categories = ["All", "Full-Stack", "AI/ML", "WordPress", "Finance", "Enterprise"];
 
+// Memoized utility functions for better performance
 const getDifficultyColor = (difficulty) => {
-  switch (difficulty) {
-    case "Beginner": return "from-green-400 to-emerald-500";
-    case "Intermediate": return "from-yellow-400 to-orange-500";
-    case "Advanced": return "from-orange-400 to-red-500";
-    case "Expert": return "from-purple-400 to-pink-500";
-    default: return "from-gray-400 to-gray-600";
-  }
+  const colorMap = {
+    "Beginner": "from-green-400 to-emerald-500",
+    "Intermediate": "from-yellow-400 to-orange-500",
+    "Advanced": "from-orange-400 to-red-500",
+    "Expert": "from-purple-400 to-pink-500"
+  };
+  return colorMap[difficulty] || "from-gray-400 to-gray-600";
 };
 
 const getCategoryColor = (category) => {
-  switch (category) {
-    case "Full-Stack": return "from-blue-400 to-cyan-500";
-    case "AI/ML": return "from-purple-400 to-pink-500";
-    case "WordPress": return "from-emerald-400 to-teal-500";
-    case "Finance": return "from-yellow-400 to-orange-500";
-    case "Enterprise": return "from-red-400 to-pink-500";
-    default: return "from-gray-400 to-gray-600";
-  }
+  const colorMap = {
+    "Full-Stack": "from-blue-400 to-cyan-500",
+    "AI/ML": "from-purple-400 to-pink-500",
+    "WordPress": "from-emerald-400 to-teal-500",
+    "Finance": "from-yellow-400 to-orange-500",
+    "Enterprise": "from-red-400 to-pink-500"
+  };
+  return colorMap[category] || "from-gray-400 to-gray-600";
 };
 
-const ProjectCard = ({ project, index }) => {
+// Optimized ProjectCard component with React.memo
+const ProjectCard = React.memo(({ project, index }) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleLiveDemo = (e) => {
+  const handleLiveDemo = useCallback((e) => {
     e.preventDefault();
     if (project.liveLink && project.liveLink !== "#") {
       window.open(project.liveLink, '_blank', 'noopener,noreferrer');
     }
-  };
+  }, [project.liveLink]);
 
-  const handleViewCode = (e) => {
+  const handleViewCode = useCallback((e) => {
     e.preventDefault();
     if (project.codeLink && project.codeLink !== "#") {
       window.open(project.codeLink, '_blank', 'noopener,noreferrer');
     }
-  };
+  }, [project.codeLink]);
+
+  const isLiveDemoAvailable = project.liveLink && project.liveLink !== "#";
+  const isCodeAvailable = project.codeLink && project.codeLink !== "#";
 
   return (
     <motion.div
@@ -151,7 +154,7 @@ const ProjectCard = ({ project, index }) => {
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: index * 0.1 }}
-      viewport={{ once: true }}
+      viewport={{ once: true, amount: 0.3 }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -162,6 +165,7 @@ const ProjectCard = ({ project, index }) => {
             src={project.image}
             alt={project.title}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            loading="lazy"
           />
           
           {/* Overlay */}
@@ -174,8 +178,9 @@ const ProjectCard = ({ project, index }) => {
               className="p-3 bg-white/20 backdrop-blur-sm rounded-xl border border-white/30 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
-              disabled={!project.liveLink || project.liveLink === "#"}
-              title={project.liveLink && project.liveLink !== "#" ? "View Live Demo" : "Demo not available"}
+              disabled={!isLiveDemoAvailable}
+              title={isLiveDemoAvailable ? "View Live Demo" : "Demo not available"}
+              aria-label="View Live Demo"
             >
               <FiExternalLink size={20} />
             </motion.button>
@@ -184,8 +189,9 @@ const ProjectCard = ({ project, index }) => {
               className="p-3 bg-white/20 backdrop-blur-sm rounded-xl border border-white/30 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
-              disabled={!project.codeLink || project.codeLink !== "#"}
-              title={project.codeLink && project.codeLink !== "#" ? "View Source Code" : "Code not available"}
+              disabled={!isCodeAvailable}
+              title={isCodeAvailable ? "View Source Code" : "Code not available"}
+              aria-label="View Source Code"
             >
               <FiGithub size={20} />
             </motion.button>
@@ -213,7 +219,7 @@ const ProjectCard = ({ project, index }) => {
             <div className="flex flex-wrap gap-2">
               {project.technologies.map((tech, idx) => (
                 <span
-                  key={idx}
+                  key={`${project.id}-tech-${idx}`}
                   className="px-2 sm:px-3 py-1 bg-white/10 backdrop-blur-sm rounded-lg text-xs text-gray-300 border border-white/20"
                 >
                   {tech}
@@ -230,7 +236,7 @@ const ProjectCard = ({ project, index }) => {
             </h4>
             <div className="space-y-1 sm:space-y-2">
               {project.features.slice(0, 3).map((feature, idx) => (
-                <div key={idx} className="flex items-center gap-2 text-xs sm:text-sm text-gray-400">
+                <div key={`${project.id}-feature-${idx}`} className="flex items-center gap-2 text-xs sm:text-sm text-gray-400">
                   <div className="w-1.5 h-1.5 rounded-full bg-cyan-400"></div>
                   <span>{feature}</span>
                 </div>
@@ -267,7 +273,9 @@ const ProjectCard = ({ project, index }) => {
       </div>
     </motion.div>
   );
-};
+});
+
+ProjectCard.displayName = 'ProjectCard';
 
 const Projects = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -277,9 +285,18 @@ const Projects = () => {
     setIsVisible(true);
   }, []);
 
-  const filteredProjects = selectedCategory === "All" 
-    ? projects 
-    : projects.filter(project => project.category === selectedCategory);
+  // Memoized filtered projects for better performance
+  const filteredProjects = useMemo(() => 
+    selectedCategory === "All" 
+      ? projects 
+      : projects.filter(project => project.category === selectedCategory),
+    [selectedCategory]
+  );
+
+  // Memoized category filter handler
+  const handleCategoryChange = useCallback((category) => {
+    setSelectedCategory(category);
+  }, []);
 
   return (
     <section id="projects" className="relative py-12 sm:py-16 lg:py-20 overflow-hidden" style={{
@@ -316,7 +333,7 @@ const Projects = () => {
           {categories.map((category, index) => (
             <motion.button
               key={category}
-              onClick={() => setSelectedCategory(category)}
+              onClick={() => handleCategoryChange(category)}
               className={`px-4 sm:px-6 py-2 sm:py-3 rounded-full text-sm sm:text-base font-medium transition-all duration-300 ${
                 selectedCategory === category
                   ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/25"
@@ -327,6 +344,7 @@ const Projects = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
+              aria-label={`Filter by ${category}`}
             >
               {category}
             </motion.button>
