@@ -5,7 +5,7 @@ import { FaRocket, FaBrain, FaCogs } from "react-icons/fa";
 
 const experiences = [
   {
-    role: "Full Stack Developer",
+    role: "Full Stack Developer Intern",
     company: "Netsol Technologies",
     date: "July 2024 - September 2024",
     logo: "./netsollogo.png",
