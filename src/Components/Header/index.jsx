@@ -5,7 +5,6 @@ import { FiMenu, FiX, FiHome, FiUser, FiCode, FiBriefcase, FiMessageSquare } fro
 const navItems = [
   { name: "Home", href: "#home", icon: <FiHome /> },
   { name: "About", href: "#about", icon: <FiUser /> },
-  { name: "Skills", href: "#skills", icon: <FiCode /> },
   { name: "Experience", href: "#experience", icon: <FiBriefcase /> },
   { name: "Projects", href: "#projects", icon: <FiCode /> },
   { name: "Services", href: "#services", icon: <FiCode /> },
