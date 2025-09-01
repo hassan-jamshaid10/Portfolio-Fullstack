@@ -20,14 +20,14 @@ const AboutMe = () => {
   }, []);
 
   const stats = [
-    { icon: <FaCode />, number: "20+", label: "Projects Completed", color: "from-blue-400 to-cyan-500" },
-    { icon: <FaBrain />, number: "2+", label: "Years Experience", color: "from-purple-400 to-pink-500" },
-    { icon: <FaRocket />, number: "100%", label: "Client Satisfaction", color: "from-emerald-400 to-teal-500" },
-    { icon: <FaLightbulb />, number: "24/7", label: "Problem Solving", color: "from-orange-400 to-red-500" }
+    { icon: <FaCode />, number: "15+", label: "Projects Completed", color: "from-blue-400 to-cyan-500" },
+    { icon: <FaBrain />, number: "2+", label: "Years Learning", color: "from-purple-400 to-pink-500" },
+    { icon: <FaRocket />, number: "10+", label: "Happy Clients", color: "from-emerald-400 to-teal-500" },
+    { icon: <FaLightbulb />, number: "Always", label: "Learning", color: "from-orange-400 to-red-500" }
   ];
 
   const skills = [
-    "Full-Stack Development", "AI/ML Engineering", "DevOps & Cloud", 
+    "Full-Stack Development", "Learning AI/ML", "AWS | Docker | Jenkins", 
     "UI/UX Design", "Database Design", "API Development"
   ];
 
@@ -121,22 +121,41 @@ const AboutMe = () => {
             {/* Introduction */}
             <div className="space-y-4 sm:space-y-6">
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
-                I'm Hassan, a passionate technologist
+                I'm Hassan, a curious developer
               </h2>
               
               <div className="space-y-3 sm:space-y-4 text-gray-300 leading-relaxed">
                 <p className="text-base sm:text-lg">
-                  I'm a Full Stack Developer, AI Engineer, and ML/DL enthusiast with a passion for 
-                  creating innovative digital solutions. My journey in technology has been driven by 
-                  curiosity and a desire to solve complex problems.
+                  I'm a Full Stack Developer with strong experience in building scalable web applications. 
+                  I'm currently learning AI and machine learning concepts, working with TensorFlow, PyTorch, and OpenCV 
+                  to expand my skills in this exciting field.
                 </p>
                 
                 <p className="text-base sm:text-lg">
-                  With expertise in React, Spring Boot, Python, and deep learning frameworks, 
-                  I specialize in building scalable, intelligent applications that drive business growth 
-                  and user engagement.
+                I'm proficient with React, Spring Boot, and Node.js, with hands-on experience in DevOps, including AWS, Docker containerization, and cloud deployment. I focus on building reliable end-to-end solutions from concept to production.
                 </p>
               </div>
+            </div>
+
+            {/* AWS Certification Badge */}
+            <div className="mb-6 sm:mb-8">
+              <h3 className="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4 flex items-center gap-2">
+                <FiAward className="text-cyan-400" />
+                Certifications
+              </h3>
+              <div className="flex justify-center sm:justify-start">
+                <div className="relative group">
+                  <img 
+                    src="/aws-academy-graduate-aws-academy-cloud-foundations.png" 
+                    alt="AWS Academy Cloud Foundations Graduate" 
+                    className="w-32 h-32 sm:w-40 sm:h-40 object-contain rounded-lg border border-white/20 hover:border-cyan-400/50 transition-all duration-300 hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
+                </div>
+              </div>
+              <p className="text-sm text-gray-400 mt-2 text-center sm:text-left">
+                AWS Academy Cloud Foundations Graduate
+              </p>
             </div>
 
             {/* Skills */}

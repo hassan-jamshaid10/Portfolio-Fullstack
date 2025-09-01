@@ -26,9 +26,9 @@ const LandingPage = () => {
   }, []);
 
   const skills = [
-    { icon: <FiCode size={18} className="sm:w-5 sm:h-5" />, text: "Full-Stack Development" },
-    { icon: <FaBrain size={18} className="sm:w-5 sm:h-5" />, text: "AI/ML Engineering" },
-    { icon: <FaCogs size={18} className="sm:w-5 sm:h-5" />, text: "DevOps & Cloud" },
+    { icon: <FiCode size={18} className="sm:w-5 sm:h-5" />, text: "Full-Stack Developer" },
+    { icon: <FaBrain size={18} className="sm:w-5 sm:h-5" />, text: "Learning AI/ML" },
+    { icon: <FaCogs size={18} className="sm:w-5 sm:h-5" />, text: "AWS & Docker" },
     { icon: <FiZap size={18} className="sm:w-5 sm:h-5" />, text: "UI/UX Design" }
   ];
 
@@ -126,7 +126,7 @@ const LandingPage = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 1.2, delay: 0.6, ease: "easeOut" }}
         >
-          Full-Stack Developer • AI Engineer • ML/DL Specialist • Creative Problem Solver
+           Full-Stack Developer • Learning AI/ML • Problem Solver
         </motion.p>
 
         {/* Skills Grid */}

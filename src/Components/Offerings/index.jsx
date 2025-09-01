@@ -6,7 +6,7 @@ const offeringsData = [
   {
     id: 1,
     title: "Full-Stack Development",
-    description: "End-to-end web application development using modern technologies. From concept to deployment, I handle both frontend and backend development with scalable architecture.",
+    description: "Expert full-stack web application development using modern technologies. I build both frontend and backend components with scalable architecture, focusing on clean code, best practices, and production-ready solutions.",
     icon: <FaRocket />,
     features: ["React/Next.js Frontend", "Node.js/Spring Boot Backend", "Database Design & Optimization", "API Development", "DevOps & Deployment"],
     gradient: "from-blue-400 to-cyan-500"
@@ -14,41 +14,47 @@ const offeringsData = [
   {
     id: 2,
     title: "AI/ML Model Training",
-    description: "Custom artificial intelligence and machine learning model development and training. Specialized in creating intelligent solutions for business automation and data analysis.",
+    description: "I provide AI/ML model development and training services using TensorFlow, PyTorch, and OpenCV. My focus is on building practical machine learning solutions, implementing computer vision techniques, and integrating AI into real-world applications.",
     icon: <FaBrain />,
-    features: ["Custom ML Models", "Deep Learning", "Data Preprocessing", "Model Training", "Performance Optimization"],
+    features: [
+      "TensorFlow & PyTorch Model Development",
+      "Computer Vision with OpenCV",
+      "Data Preprocessing & Cleaning",
+      "Model Training & Fine-tuning",
+      "AI Integration for Applications"
+    ],
     gradient: "from-purple-400 to-pink-500"
   },
   {
     id: 3,
     title: "Custom Mobile Development",
-    description: "Responsive mobile-first cross platform applications that work seamlessly across all devices. Optimized for mobile performance and user experience.",
+    description: "Cross-platform mobile applications using React Native. I'm learning mobile development and focusing on creating responsive, user-friendly mobile experiences.",
     icon: <FaMobile />,
-    features: ["Mobile-First Design", "Progressive mobile Apps", "Touch Optimization", "Performance Tuning", "Cross-Platform"],
+    features: ["React Native Apps", "Mobile UI/UX", "Cross-Platform", "Learning Performance", "Basic Optimization"],
     gradient: "from-emerald-400 to-teal-500"
   },
   {
     id: 4,
     title: "WordPress Development",
-    description: "Custom WordPress themes, plugins, and websites tailored to your business needs. From simple blogs to complex e-commerce solutions.",
+    description: "Custom WordPress themes and websites for businesses. I can create custom themes, basic plugins, and help with WordPress customization and optimization.",
     icon: <FaWordpress />,
-    features: ["Custom Themes", "Plugin Development", "E-commerce Integration", "SEO Optimization", "Performance Tuning"],
+    features: ["Custom Themes", "Basic Plugins", "WordPress Customization", "SEO Basics", "Performance Optimization"],
     gradient: "from-orange-400 to-red-500"
   },
   {
     id: 5,
     title: "Cloud & DevOps",
-    description: "Cloud infrastructure setup, CI/CD pipelines, and DevOps automation to ensure reliable, scalable, and secure application deployment.",
+    description: "Cloud deployment with best practices using AWS. I have hands on experience with AWS services, Docker containerization, and deployment automation for production applications.",
     icon: <FaCogs />,
-    features: ["AWS/Azure Setup", "Docker & Kubernetes", "CI/CD Pipelines", "Monitoring & Logging", "Security & Compliance"],
+    features: ["AWS Cloud Services", "Docker Containerization", "CI/CD Pipelines", "Cloud Monitoring", "Security Best Practices"],
     gradient: "from-indigo-400 to-purple-500"
   },
   {
     id: 6,
     title: "UI/UX Design",
-    description: "User-centered design solutions that combine aesthetics with functionality, creating intuitive and engaging user experiences across all devices.",
+    description: "UI/UX design focused on creating clean, functional interfaces. I enjoy designing user-friendly experiences and learning about design principles and user research.",
     icon: <FiZap />,
-    features: ["Responsive Design", "User Research", "Prototyping", "Accessibility", "Performance Optimization"],
+    features: ["Responsive Design", "Learning User Research", "Basic Prototyping", "Accessibility Basics", "Performance Optimization"],
     gradient: "from-cyan-400 to-blue-500"
   }
 ];
@@ -86,8 +92,8 @@ const Offerings = () => {
             What I Offer
           </h1>
           <p className="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed px-4">
-            Comprehensive digital solutions tailored to your business needs. 
-            From development to deployment, I ensure quality and innovation at every step.
+            Professional digital solutions tailored to your needs. 
+            I deliver quality applications with expertise in full-stack development, learning AI/ML, and solid cloud deployment skills.
           </p>
         </div>
 
