@@ -29,6 +29,39 @@ const projects = [
     difficulty: "Intermediate",
     features: ["Chapter Information", "Member Hierarchy", "Event Management", "Registration System", "Admin Panel"]
   },
+  {
+  "id": 10,
+  "title": "Codebase AI - The AI Code Explainer",
+  "description": "Codebase AI is an advanced AI-powered platform that helps developers understand complex codebases using Retrieval-Augmented Generation (RAG). It enables repository loading, multi-language code analysis, and intelligent Q&A with real-time explanations.",
+  "image": "/image.png",
+  "liveLink": "#",
+  "codeLink": "https://github.com/hassan-jamshaid10/CodebaseAI.git",
+  "technologies": [
+    "React.js",
+    "Vite",
+    "Tailwind CSS",
+    "Framer Motion",
+    "FastAPI",
+    "Python",
+    "LangChain",
+    "ChromaDB",
+    "HuggingFace Transformers",
+    "RAG"
+  ],
+  "category": "AI / Full-Stack",
+  "difficulty": "Advanced",
+  "features": [
+    "AI-Powered Code Understanding",
+    "RAG Implementation with Vector Search",
+    "Multi-Language Code Support",
+    "Repository Loader & File Analysis",
+    "LLM-Based Q&A System",
+    "Modern Animated UI/UX",
+    "FastAPI Backend with Swagger Docs",
+    "Secure and Scalable Architecture"
+  ]
+},
+
    {
     id: 6,
     title: "Trade an Idea",
