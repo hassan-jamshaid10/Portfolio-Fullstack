@@ -107,7 +107,7 @@ const projects = [
   "id": 9,
   "title": "Ecommerce Management System",
   "description": "A full-stack eCommerce management application built with React.js, Vite, Ant Design, and Tailwind CSS. The system includes user authentication and CRUD operations on products fetched from an external API.",
-  "image": "/ecommerce.png",
+  "image": "/Ecommerce.png",
   "liveLink": "#",
   "codeLink": "https://github.com/hassan-jamshaid10/Ecommerce-Product-Management.git",
   "technologies": ["React.js", "Vite", "Ant Design", "Tailwind CSS", "REST API"],
