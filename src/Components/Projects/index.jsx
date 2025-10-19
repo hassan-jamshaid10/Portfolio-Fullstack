@@ -29,6 +29,43 @@ const projects = [
     difficulty: "Intermediate",
     features: ["Chapter Information", "Member Hierarchy", "Event Management", "Registration System", "Admin Panel"]
   },
+   {
+    id: 6,
+    title: "Trade an Idea",
+    description: "Trade an Idea is a platform where users can share and discuss innovative ideas. Features authentication with OTP verification, categorized idea submissions based on SDGs, and AI-powered originality checks using a fine-tuned LiteLlama model. Built with React.js frontend and Node.js/Express backend with MySQL database.",
+    image: "/Trade.png",
+    liveLink: "https://trade-an-idea.com",
+    codeLink: "https://github.com/hassan-jamshaid10/TradeAnIdea.git",
+    technologies: ["React.js", "Node.js", "Express.js", "MySQL", "LiteLlama", "TensorFlow", "PyTorch"],
+    category: "Full-Stack",
+    difficulty: "Advanced",
+    features: ["OTP Authentication", "AI Originality Check", "SDG Categorization", "Idea Submission", "User Comments", "Profile Management"]
+  },
+   {
+    id: 8,
+    title: "Campus Nest - Hostel Management",
+    description: "Hostel management application built with MERN stack. This project helped me understand database design for complex systems and learn about automated processes. I'm working on adding more intelligent features.",
+    image: "/campus.png",
+    liveLink: "https://campus-nest.com",
+    codeLink: "https://github.com/Talhabadar184/Campusnest.git",
+    technologies: ["React", "Node.js", "MongoDB", "Express", "AI/ML", "MERN Stack"],
+    category: "Full-Stack",
+    difficulty: "Intermediate",
+    features: ["Room Management", "Student Registration", "AI-Powered Allocation", "Payment Tracking", "Maintenance Requests"]
+  },
+   {
+    id: 7,
+    title: "Pulse AI - Hospital Management",
+    description: "Hospital management platform built with MERN stack and React Native. This project was my introduction to mobile development and learning about healthcare system requirements. I'm still exploring AI integration possibilities.",
+    image: "/pulse.png",
+    liveLink: "https://pulse-ai-hospital.com",
+    codeLink: "https://github.com/hassan-jamshaid10/pulse-ai-hospital",
+    technologies: ["React", "React Native", "Node.js", "MongoDB", "Express", "AI/ML", "MERN Stack"],
+    category: "Full-Stack",
+    difficulty: "Advanced",
+    features: ["Patient Management", "AI Diagnosis Support", "Cross-Platform Mobile App", "Electronic Health Records", "Automated Scheduling"]
+  },
+ 
   {
     id: 3,
     title: "KHAAS Marketing Website",
@@ -66,44 +103,28 @@ const projects = [
     features: ["Real-time Face Detection", "Personality Analysis", "Computer Vision", "OpenCV Integration", "Behavioral Prediction", "Facial Feature Analysis"]
   },
  
- 
-  {
-    id: 6,
-    title: "Trade an Idea",
-    description: "Trade an Idea is a platform where users can share and discuss innovative ideas. Features authentication with OTP verification, categorized idea submissions based on SDGs, and AI-powered originality checks using a fine-tuned LiteLlama model. Built with React.js frontend and Node.js/Express backend with MySQL database.",
-    image: "/Trade.png",
-    liveLink: "https://trade-an-idea.com",
-    codeLink: "https://github.com/hassan-jamshaid10/TradeAnIdea.git",
-    technologies: ["React.js", "Node.js", "Express.js", "MySQL", "LiteLlama", "TensorFlow", "PyTorch"],
-    category: "Full-Stack",
-    difficulty: "Advanced",
-    features: ["OTP Authentication", "AI Originality Check", "SDG Categorization", "Idea Submission", "User Comments", "Profile Management"]
-  },
+ {
+  "id": 9,
+  "title": "Ecommerce Management System",
+  "description": "A full-stack eCommerce management application built with React.js, Vite, Ant Design, and Tailwind CSS. The system includes user authentication and CRUD operations on products fetched from an external API.",
+  "image": "/ecommerce.png",
+  "liveLink": "#",
+  "codeLink": "https://github.com/hassan-jamshaid10/Ecommerce-Product-Management.git",
+  "technologies": ["React.js", "Vite", "Ant Design", "Tailwind CSS", "REST API"],
+  "category": "Full-Stack",
+  "difficulty": "Intermediate",
+  "features": [
+    "User Authentication (Login/Signup)",
+    "Product CRUD Operations",
+    "Responsive UI Design",
+    "API Integration (freeapi)",
+    "Scalable Frontend Architecture"
+  ]
+},
   
-  {
-    id: 7,
-    title: "Pulse AI - Hospital Management",
-    description: "Hospital management platform built with MERN stack and React Native. This project was my introduction to mobile development and learning about healthcare system requirements. I'm still exploring AI integration possibilities.",
-    image: "/pulse.png",
-    liveLink: "https://pulse-ai-hospital.com",
-    codeLink: "https://github.com/hassan-jamshaid10/pulse-ai-hospital",
-    technologies: ["React", "React Native", "Node.js", "MongoDB", "Express", "AI/ML", "MERN Stack"],
-    category: "Full-Stack",
-    difficulty: "Advanced",
-    features: ["Patient Management", "AI Diagnosis Support", "Cross-Platform Mobile App", "Electronic Health Records", "Automated Scheduling"]
-  },
-  {
-    id: 8,
-    title: "Campus Nest - Hostel Management",
-    description: "Hostel management application built with MERN stack. This project helped me understand database design for complex systems and learn about automated processes. I'm working on adding more intelligent features.",
-    image: "/campus.png",
-    liveLink: "https://campus-nest.com",
-    codeLink: "https://github.com/Talhabadar184/Campusnest.git",
-    technologies: ["React", "Node.js", "MongoDB", "Express", "AI/ML", "MERN Stack"],
-    category: "Full-Stack",
-    difficulty: "Intermediate",
-    features: ["Room Management", "Student Registration", "AI-Powered Allocation", "Payment Tracking", "Maintenance Requests"]
-  },
+  
+ 
+ 
   {
     id: 9,
     title: "AI Chat Application",
