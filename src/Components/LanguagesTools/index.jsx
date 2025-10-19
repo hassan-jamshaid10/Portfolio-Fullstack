@@ -17,7 +17,7 @@ const techData = {
   frameworks: [
     { icon: <SiNextdotjs />, name: "Next.js", color: "#000000", category: "Frontend" },
     { icon: <FaReact />, name: "React", color: "#61DBFB", category: "Frontend" },
-    { icon: <FaReactNative />, name: "React Native", color: "#61DBFB", category: "Mobile" },
+    // { icon: <FaReactNative />, name: "React Native", color: "#61DBFB", category: "Mobile" },
     { icon: <SiTailwindcss />, name: "Tailwind CSS", color: "#06B6D4", category: "Styling" },
     { icon: <SiThreedotjs />, name: "Three.js", color: "#000000", category: "3D Graphics" },
     { icon: <FaNodeJs />, name: "Node.js", color: "#68A063", category: "Backend" },
@@ -50,11 +50,11 @@ const techData = {
     { icon: <FaGithub />, name: "GitHub", color: "#FFFFFF", category: "Version Control" },
     { icon: <FaAws />, name: "AWS", color: "#FF9900", category: "Cloud Platform" },
     { icon: <FaDocker />, name: "Docker", color: "#2496ED", category: "Containerization" },
-    { icon: <FaJenkins />, name: "Jenkins", color: "#D24939", category: "CI/CD" }
+    // { icon: <FaJenkins />, name: "Jenkins", color: "#D24939", category: "CI/CD" }
   ],
   testing: [
     { icon: <SiJest />, name: "Jest", color: "#C21325", category: "Testing" },
-    { icon: <SiMocha />, name: "Mocha", color: "#8D6748", category: "Testing" },
+    // { icon: <SiMocha />, name: "Mocha", color: "#8D6748", category: "Testing" },
     { icon: <SiPostman />, name: "Postman", color: "#FF6C37", category: "API Testing" }
   ],
   others: [
