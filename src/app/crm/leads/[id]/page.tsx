@@ -1,0 +1,136 @@
+"use client";
+
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { trpc } from "@/trpc/client";
+
+export default function CrmLeadDetailPage() {
+  const params = useParams<{ id: string }>();
+  const id = params.id;
+  const me = trpc.auth.me.useQuery();
+  const detail = trpc.leads.byId.useQuery(
+    { id },
+    { enabled: Boolean(me.data?.authenticated && id) },
+  );
+  const utils = trpc.useUtils();
+
+  const approve = trpc.leads.approveAndSend.useMutation({
+    onSuccess: async () => {
+      await detail.refetch();
+      await utils.leads.list.invalidate();
+    },
+  });
+
+  const reject = trpc.leads.updateStatus.useMutation({
+    onSuccess: async () => {
+      await detail.refetch();
+      await utils.leads.list.invalidate();
+    },
+  });
+
+  if (me.isLoading || detail.isLoading) {
+    return <div className="p-8 text-muted">Loading lead…</div>;
+  }
+
+  if (!me.data?.authenticated) {
+    return (
+      <div className="p-8">
+        <Link href="/crm" className="text-teal underline">
+          Sign in to view this lead
+        </Link>
+      </div>
+    );
+  }
+
+  if (!detail.data) {
+    return <div className="p-8 text-muted">Lead not found.</div>;
+  }
+
+  const { lead, variants, applications } = detail.data;
+  const latestVariant = variants[0];
+  const latestApp = applications[0];
+  const canApprove = lead.status === "ready" || lead.status === "new";
+
+  return (
+    <div className="mx-auto max-w-5xl px-5 py-8 md:px-8">
+      <Link href="/crm" className="text-sm font-semibold text-teal">
+        ← Back to approvals
+      </Link>
+
+      <header className="mt-4 border-b border-line pb-6">
+        <p className="font-[family-name:var(--font-mono)] text-xs uppercase tracking-[0.16em] text-muted">
+          {lead.source} · score {lead.fit_score} · {lead.status}
+        </p>
+        <h1 className="mt-2 font-[family-name:var(--font-display)] text-3xl font-bold md:text-4xl">
+          {lead.role}
+        </h1>
+        <p className="mt-1 text-lg text-teal">{lead.company}</p>
+        <p className="mt-2 text-sm text-muted">
+          Send to: {lead.contact_email ?? "CRM_APPLY_TO_EMAIL fallback"}
+        </p>
+        {lead.url ? (
+          <a
+            href={lead.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-block text-sm underline"
+          >
+            Open posting
+          </a>
+        ) : null}
+      </header>
+
+      <div className="mt-6 flex flex-wrap gap-3">
+        <button
+          type="button"
+          disabled={!canApprove || approve.isPending}
+          onClick={() => approve.mutate({ id: lead.id })}
+          className="bg-ink px-5 py-2.5 text-sm font-semibold text-paper hover:bg-teal disabled:opacity-60"
+        >
+          {lead.status === "applied"
+            ? "Already sent"
+            : approve.isPending
+              ? "Sending…"
+              : "Approve & send email"}
+        </button>
+        <button
+          type="button"
+          disabled={!canApprove || reject.isPending}
+          onClick={() => reject.mutate({ id: lead.id, status: "rejected" })}
+          className="border border-line px-5 py-2.5 text-sm font-semibold text-muted"
+        >
+          Reject
+        </button>
+      </div>
+
+      {approve.isSuccess ? (
+        <p className="mt-4 text-sm text-teal">
+          Sent to {approve.data.to}
+          {approve.data.mock ? " (mock mode)" : ""}.
+        </p>
+      ) : null}
+      {approve.isError ? (
+        <p className="mt-4 text-sm text-red-700">{approve.error.message}</p>
+      ) : null}
+
+      <section className="mt-8 grid gap-6 md:grid-cols-2">
+        <div className="border border-line p-4">
+          <h2 className="font-[family-name:var(--font-display)] text-lg font-bold">
+            Cover draft
+          </h2>
+          <pre className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-ink-soft/90">
+            {latestApp?.cover_draft ?? "Will auto-generate on approve."}
+          </pre>
+        </div>
+        <div className="border border-line p-4">
+          <h2 className="font-[family-name:var(--font-display)] text-lg font-bold">
+            Resume variant
+          </h2>
+          <pre className="mt-3 max-h-[420px] overflow-auto whitespace-pre-wrap text-sm leading-relaxed text-ink-soft/90">
+            {latestVariant?.content ?? "Will auto-generate on approve."}
+          </pre>
+        </div>
+      </section>
+    </div>
+  );
+}
