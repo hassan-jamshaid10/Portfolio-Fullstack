@@ -24,6 +24,12 @@
 .DS_Store
 *.pem
 
+# one-off local tooling / unused assets
+/scripts/
+/public/hassan-portrait.png
+/public/1765995924461.jpg
+/public/_portrait-src.png
+
 # debug
 npm-debug.log*
 yarn-debug.log*
