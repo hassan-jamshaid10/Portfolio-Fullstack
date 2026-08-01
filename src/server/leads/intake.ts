@@ -1,17 +1,20 @@
+import { defaultLeadFilters } from "@/content/leadFilters";
 import { getDb } from "@/server/db";
-import { composioExecute } from "@/server/composio/client";
+import { jsonb } from "@/server/db/json";
+import { composioNotifySafe } from "@/server/composio/client";
+import { hasApplyPath, resolveApplyMode } from "@/server/leads/emails";
+import { fetchOrganicLeads } from "@/server/leads/sources";
 import { scoreLead } from "@/server/leads/score";
 import { buildCoverDraft, buildResumeVariant } from "@/server/leads/variants";
 
-type IncomingLead = {
-  company: string;
-  role: string;
-  url?: string | null;
-  location?: string | null;
-  description?: string | null;
-  contactEmail?: string | null;
-  source?: string;
-};
+function sanitizeNotes(description?: string | null) {
+  if (!description) return null;
+  return description
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 1500);
+}
 
 type LeadFilters = {
   titles?: string[];
@@ -21,93 +24,6 @@ type LeadFilters = {
   minFitScore?: number;
 };
 
-function asRecord(value: unknown): Record<string, unknown> | null {
-  return value && typeof value === "object"
-    ? (value as Record<string, unknown>)
-    : null;
-}
-
-function pickString(...values: unknown[]) {
-  for (const value of values) {
-    if (typeof value === "string" && value.trim()) return value.trim();
-  }
-  return null;
-}
-
-function normalizeJobs(payload: unknown): IncomingLead[] {
-  const root = asRecord(payload) ?? {};
-  const data = asRecord(root.data) ?? root;
-  const candidates = [
-    data.jobs,
-    data.results,
-    data.organizations,
-    data.people,
-    root.jobs,
-    root.results,
-  ];
-
-  const list = candidates.find((item) => Array.isArray(item)) as
-    | unknown[]
-    | undefined;
-
-  if (!list?.length) return [];
-
-  const normalized: IncomingLead[] = [];
-
-  for (const item of list) {
-    const row = asRecord(item) ?? {};
-    const org = asRecord(row.organization) ?? asRecord(row.company) ?? {};
-    const company = pickString(
-      row.company,
-      row.company_name,
-      org.name,
-      row.organization_name,
-    );
-    const role = pickString(
-      row.role,
-      row.title,
-      row.job_title,
-      row.position,
-      row.name,
-    );
-    if (!company || !role) continue;
-
-    normalized.push({
-      company,
-      role,
-      url: pickString(
-        row.url,
-        row.apply_url,
-        row.job_url,
-        row.linkedin_url,
-        row.website_url,
-      ),
-      location: pickString(
-        row.location,
-        row.city,
-        row.raw_address,
-        row.present_raw_address,
-      ),
-      description: pickString(
-        row.description,
-        row.snippet,
-        row.seo_description,
-        row.headline,
-      ),
-      contactEmail: pickString(
-        row.email,
-        row.contact_email,
-        row.apply_email,
-        row.recruiter_email,
-        org.email,
-      ),
-      source: "apollo",
-    });
-  }
-
-  return normalized;
-}
-
 async function getFilters(): Promise<LeadFilters> {
   const db = getDb();
   const row = await db
@@ -116,128 +32,37 @@ async function getFilters(): Promise<LeadFilters> {
     .where("key", "=", "lead_filters")
     .executeTakeFirst();
 
-  return (row?.value as LeadFilters) ?? { dailyCap: 10, minFitScore: 55 };
-}
-
-async function fetchApolloLeads(filters: LeadFilters): Promise<IncomingLead[]> {
-  const titles = filters.titles ?? [
-    "Software Engineer",
-    "Full Stack Engineer",
-    "Full Stack Developer",
-  ];
-  const locations = filters.locations ?? ["Remote"];
-  const keywords = filters.keywords ?? ["TypeScript", "Next.js", "React"];
-  const limit = filters.dailyCap ?? 10;
-
-  const attempts = [
-    {
-      action: "APOLLO_SEARCH_JOBS",
-      params: { titles, locations, keywords, limit },
-    },
-    {
-      action: "APOLLO_ORGANIZATIONS_SEARCH",
-      params: {
-        q_organization_keyword_tags: keywords,
-        organization_locations: locations,
-        page: 1,
-        per_page: limit,
-      },
-    },
-    {
-      action: "APOLLO_PEOPLE_SEARCH",
-      params: {
-        person_titles: ["Recruiter", "Talent Acquisition", "Hiring Manager"],
-        q_keywords: keywords.join(" "),
-        person_locations: locations,
-        page: 1,
-        per_page: limit,
-      },
-    },
-  ];
-
-  const collected: IncomingLead[] = [];
-  const errors: string[] = [];
-
-  for (const attempt of attempts) {
-    try {
-      const result = await composioExecute({
-        action: attempt.action,
-        params: attempt.params,
-      });
-      const jobs = normalizeJobs(result.data).map((job) => ({
-        ...job,
-        source: result.mock ? "mock" : "apollo",
-      }));
-      collected.push(...jobs);
-      if (collected.length >= limit) break;
-    } catch (error) {
-      errors.push(
-        `${attempt.action}: ${error instanceof Error ? error.message : String(error)}`,
-      );
-    }
+  if (!row?.value) {
+    return {
+      titles: [...defaultLeadFilters.titles],
+      locations: [...defaultLeadFilters.locations],
+      keywords: [...defaultLeadFilters.keywords],
+      dailyCap: defaultLeadFilters.dailyCap,
+      minFitScore: defaultLeadFilters.minFitScore,
+    };
   }
 
-  if (!collected.length && errors.length) {
-    // Fall back to mock generator so cron still produces approvable leads.
-    const mock = await composioExecute({
-      action: "APOLLO_SEARCH_JOBS",
-      params: { titles, locations, keywords, limit },
-    });
-    // Force mock path by clearing key temporarily is overkill; use local mock shape.
-    if (!process.env.COMPOSIO_API_KEY) {
-      return normalizeJobs(mock.data);
-    }
-    throw new Error(errors.join(" | "));
-  }
-
-  if (!collected.length) {
-    const mock = getLocalMockLeads();
-    return mock;
-  }
-
-  return collected;
-}
-
-function getLocalMockLeads(): IncomingLead[] {
-  return [
-    {
-      company: "Northwind Labs",
-      role: "Full Stack Engineer",
-      url: "https://example.com/jobs/full-stack",
-      location: "Remote",
-      contactEmail: "careers@northwindlabs.example",
-      description:
-        "Build Next.js and TypeScript SaaS features with Node APIs and PostgreSQL.",
-      source: "mock",
-    },
-    {
-      company: "Cedar Systems",
-      role: "Software Engineer",
-      url: "https://example.com/jobs/software-engineer",
-      location: "Remote",
-      contactEmail: "jobs@cedarsystems.example",
-      description:
-        "Own backend services in Node/FastAPI and ship React frontends for B2B SaaS.",
-      source: "mock",
-    },
-    {
-      company: "Orbit Commerce",
-      role: "Frontend Engineer",
-      url: "https://example.com/jobs/frontend",
-      location: "Remote",
-      contactEmail: "hiring@orbitcommerce.example",
-      description:
-        "React and Next.js product UI for e-commerce operations tooling.",
-      source: "mock",
-    },
-  ];
+  const stored = row.value as LeadFilters;
+  return {
+    dailyCap: stored.dailyCap ?? defaultLeadFilters.dailyCap,
+    minFitScore: stored.minFitScore ?? defaultLeadFilters.minFitScore,
+    titles: stored.titles?.length
+      ? stored.titles
+      : [...defaultLeadFilters.titles],
+    locations: stored.locations?.length
+      ? stored.locations
+      : [...defaultLeadFilters.locations],
+    keywords: stored.keywords?.length
+      ? stored.keywords
+      : [...defaultLeadFilters.keywords],
+  };
 }
 
 export async function runDailyLeadIntake() {
   const db = getDb();
   const filters = await getFilters();
-  const dailyCap = filters.dailyCap ?? 10;
-  const minFitScore = filters.minFitScore ?? 55;
+  const dailyCap = filters.dailyCap ?? defaultLeadFilters.dailyCap;
+  const minFitScore = filters.minFitScore ?? defaultLeadFilters.minFitScore;
 
   const run = await db
     .insertInto("crm_daily_runs")
@@ -253,15 +78,40 @@ export async function runDailyLeadIntake() {
   let inserted = 0;
 
   try {
-    const incoming = await fetchApolloLeads(filters);
+    const {
+      leads: incoming,
+      errors: sourceErrors,
+      sourceBreakdown,
+    } = await fetchOrganicLeads(filters);
+    errors.push(...sourceErrors);
+
     const scored = incoming
       .map((lead) => ({
         ...lead,
-        fit_score: scoreLead(lead),
+        fit_score: scoreLead({
+          role: lead.role,
+          company: lead.company,
+          location: lead.location,
+          description: lead.description,
+          url: lead.url,
+          linkedinUrl: lead.linkedinUrl,
+          contactEmail: lead.contactEmail,
+          source: lead.source,
+        }),
+        applyMode: resolveApplyMode(lead),
       }))
-      .filter((lead) => lead.fit_score >= minFitScore)
-      .sort((a, b) => b.fit_score - a.fit_score)
+      .filter((lead) => lead.fit_score >= minFitScore && hasApplyPath(lead))
+      .sort((a, b) => {
+        // Prefer email-ready leads first.
+        if (Boolean(b.contactEmail) !== Boolean(a.contactEmail)) {
+          return a.contactEmail ? -1 : 1;
+        }
+        return b.fit_score - a.fit_score;
+      })
       .slice(0, dailyCap);
+
+    let emailReady = 0;
+    let formReady = 0;
 
     for (const lead of scored) {
       const existing = await db
@@ -273,6 +123,7 @@ export async function runDailyLeadIntake() {
 
       if (existing) continue;
 
+      const notes = sanitizeNotes(lead.description);
       const variant = buildResumeVariant({
         company: lead.company,
         role: lead.role,
@@ -280,7 +131,7 @@ export async function runDailyLeadIntake() {
       const cover = buildCoverDraft({
         company: lead.company,
         role: lead.role,
-        notes: lead.description,
+        notes,
       });
 
       const created = await db
@@ -289,13 +140,25 @@ export async function runDailyLeadIntake() {
           company: lead.company,
           role: lead.role,
           url: lead.url ?? null,
-          source: lead.source ?? "apollo",
+          source: lead.source,
           location: lead.location ?? null,
           contact_email: lead.contactEmail ?? null,
           fit_score: lead.fit_score,
           status: "ready",
-          notes: lead.description ?? null,
-          raw: lead,
+          notes,
+          raw: jsonb({
+            company: lead.company,
+            role: lead.role,
+            url: lead.url ?? null,
+            linkedinUrl: lead.linkedinUrl ?? null,
+            location: lead.location ?? null,
+            source: lead.source,
+            contactEmail: lead.contactEmail ?? null,
+            contactName: lead.contactName ?? null,
+            applyMode: lead.applyMode,
+            fit_score: lead.fit_score,
+            description: notes,
+          }),
         })
         .returningAll()
         .executeTakeFirstOrThrow();
@@ -306,7 +169,7 @@ export async function runDailyLeadIntake() {
           lead_id: created.id,
           title: variant.title,
           content: variant.content,
-          highlights: variant.highlights,
+          highlights: jsonb(variant.highlights),
         })
         .execute();
 
@@ -314,15 +177,20 @@ export async function runDailyLeadIntake() {
         .insertInto("crm_applications")
         .values({
           lead_id: created.id,
-          channel: "gmail",
+          channel: lead.contactEmail ? "gmail" : "manual",
           cover_draft: cover,
         })
         .execute();
 
+      if (lead.contactEmail) emailReady += 1;
+      else formReady += 1;
       inserted += 1;
     }
 
-    const summary = `Auto-intake complete: found ${incoming.length}, prepared ${inserted} ready-to-approve applications (min score ${minFitScore}, cap ${dailyCap}).`;
+    const breakdownText = sourceBreakdown
+      .map((row) => `${row.source}:${row.count}`)
+      .join(", ");
+    const summary = `Organic intake: found ${incoming.length}, prepared ${inserted} actionable leads (${emailReady} email, ${formReady} form). By source: ${breakdownText || "none"}.`;
 
     await db
       .updateTable("crm_daily_runs")
@@ -336,30 +204,21 @@ export async function runDailyLeadIntake() {
       .where("id", "=", run.id)
       .execute();
 
-    try {
-      await composioExecute({
-        action: "SLACK_SEND_MESSAGE",
-        params: {
-          text: `Hassan CRM: ${summary}\nOpen /crm and approve leads to send.`,
-          channel: process.env.SLACK_CRM_CHANNEL ?? "crm-leads",
-        },
-      });
-    } catch (error) {
-      errors.push(
-        `slack: ${error instanceof Error ? error.message : String(error)}`,
-      );
-      await db
-        .updateTable("crm_daily_runs")
-        .set({ errors: errors.join("\n") })
-        .where("id", "=", run.id)
-        .execute();
-    }
+    await composioNotifySafe({
+      action: "SLACK_SEND_MESSAGE",
+      params: {
+        text: `Hassan CRM: ${summary}\nOpen /crm and approve leads to send.`,
+        channel: process.env.SLACK_CRM_CHANNEL ?? "crm-leads",
+      },
+    });
 
     return {
       runId: run.id,
       leadsFound: incoming.length,
       leadsInserted: inserted,
       summary,
+      errors,
+      sourceBreakdown,
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
@@ -370,7 +229,7 @@ export async function runDailyLeadIntake() {
       .set({
         finished_at: new Date(),
         errors: errors.join("\n"),
-        summary: "Daily intake failed",
+        summary: "Daily intake failed (no fake leads inserted)",
       })
       .where("id", "=", run.id)
       .execute();

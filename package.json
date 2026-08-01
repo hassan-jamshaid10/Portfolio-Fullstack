@@ -14,6 +14,7 @@
     "crm:intake": "tsx db/run-intake.ts"
   },
   "dependencies": {
+    "@composio/core": "^0.14.1",
     "@tanstack/react-query": "^5.101.4",
     "@trpc/client": "^11.18.0",
     "@trpc/next": "^11.18.0",

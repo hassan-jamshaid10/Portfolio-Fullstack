@@ -57,9 +57,14 @@ export default function CrmHomePage() {
 
   const approve = trpc.leads.approveAndSend.useMutation({
     onSuccess: async (data) => {
-      setActionMessage(
-        `Sent to ${data.to}${data.mock ? " (mock mode)" : ""}.`,
-      );
+      if (data.mode === "form") {
+        setActionMessage(
+          `Form apply ready${data.applyUrl ? `: ${data.applyUrl}` : "."}`,
+        );
+        if (data.applyUrl) window.open(data.applyUrl, "_blank", "noopener,noreferrer");
+      } else {
+        setActionMessage(`Application emailed to ${data.to}.`);
+      }
       await utils.leads.list.invalidate();
     },
     onError: (error) => setActionMessage(error.message),
@@ -180,10 +185,41 @@ export default function CrmHomePage() {
         ))}
       </div>
 
+      {leads.data?.length ? (
+        <div className="mt-6 overflow-x-auto border border-line">
+          <table className="min-w-[320px] text-left text-sm">
+            <thead className="bg-mist font-[family-name:var(--font-mono)] text-xs uppercase tracking-[0.14em] text-muted">
+              <tr>
+                <th className="px-4 py-3">Source</th>
+                <th className="px-4 py-3">Leads</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(
+                leads.data.reduce<Record<string, number>>((acc, lead) => {
+                  acc[lead.source] = (acc[lead.source] ?? 0) + 1;
+                  return acc;
+                }, {}),
+              )
+                .sort((a, b) => b[1] - a[1])
+                .map(([source, count]) => (
+                  <tr key={source} className="border-t border-line">
+                    <td className="px-4 py-2 font-semibold capitalize">
+                      {source}
+                    </td>
+                    <td className="px-4 py-2">{count}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      ) : null}
+
       <div className="mt-6 overflow-x-auto border border-line">
         <table className="min-w-full text-left text-sm">
           <thead className="bg-mist font-[family-name:var(--font-mono)] text-xs uppercase tracking-[0.14em] text-muted">
             <tr>
+              <th className="px-4 py-3">Source</th>
               <th className="px-4 py-3">Company</th>
               <th className="px-4 py-3">Role</th>
               <th className="px-4 py-3">Score</th>
@@ -195,11 +231,15 @@ export default function CrmHomePage() {
           <tbody>
             {leads.data?.map((lead) => (
               <tr key={lead.id} className="border-t border-line">
+                <td className="px-4 py-3 font-[family-name:var(--font-mono)] text-xs uppercase tracking-[0.08em] text-teal">
+                  {lead.source}
+                </td>
                 <td className="px-4 py-3 font-semibold">{lead.company}</td>
                 <td className="px-4 py-3">{lead.role}</td>
                 <td className="px-4 py-3">{lead.fit_score}</td>
                 <td className="px-4 py-3 text-muted">
-                  {lead.contact_email ?? "CRM_APPLY_TO_EMAIL"}
+                  {lead.contact_email ??
+                    (lead.url ? "Apply form / URL" : "No email")}
                 </td>
                 <td className="px-4 py-3 capitalize">{lead.status}</td>
                 <td className="px-4 py-3">
@@ -239,7 +279,7 @@ export default function CrmHomePage() {
             ))}
             {!leads.data?.length ? (
               <tr>
-                <td colSpan={6} className="px-4 py-10 text-center text-muted">
+                <td colSpan={7} className="px-4 py-10 text-center text-muted">
                   {leads.isLoading
                     ? "Loading leads…"
                     : "No ready leads. Wait for cron or click Generate leads now."}

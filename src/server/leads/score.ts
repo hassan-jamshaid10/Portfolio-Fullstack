@@ -18,6 +18,10 @@ export function scoreLead(input: {
   company: string;
   location?: string | null;
   description?: string | null;
+  url?: string | null;
+  linkedinUrl?: string | null;
+  contactEmail?: string | null;
+  source?: string | null;
 }) {
   const haystack = [
     input.role,
@@ -28,16 +32,27 @@ export function scoreLead(input: {
     .join(" ")
     .toLowerCase();
 
-  let score = 35;
+  let score = 40;
   for (const term of STACK_TERMS) {
     if (haystack.includes(term.toLowerCase())) {
-      score += 4;
+      score += 3;
     }
   }
 
-  if (haystack.includes("remote")) score += 8;
+  if (input.linkedinUrl || input.url?.includes("linkedin.com")) score += 12;
+  if (input.contactEmail) score += 10;
+  if (input.source?.includes("linkedin")) score += 6;
+  if (haystack.includes("remote") || haystack.includes("pakistan")) score += 6;
   if (haystack.includes("next.js") || haystack.includes("typescript")) score += 6;
-  if (haystack.includes("intern") || haystack.includes("junior")) score += 3;
+  if (
+    haystack.includes("intern") ||
+    haystack.includes("junior") ||
+    haystack.includes("associate") ||
+    haystack.includes("entry")
+  ) {
+    score += 8;
+  }
+  if (/\bsenior\b|\bsr\.?\b|staff|principal/.test(haystack)) score -= 12;
 
   return Math.max(0, Math.min(100, score));
 }

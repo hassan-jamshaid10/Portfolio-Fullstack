@@ -15,6 +15,14 @@ export const runsRouter = createTRPCRouter({
     }),
 
   trigger: protectedProcedure.mutation(async () => {
-    return runDailyLeadIntake();
+    try {
+      return await runDailyLeadIntake();
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Lead intake failed for an unknown reason";
+      throw new Error(message);
+    }
   }),
 });

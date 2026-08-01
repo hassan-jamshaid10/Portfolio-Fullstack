@@ -1,6 +1,12 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { composioExecute } from "@/server/composio/client";
+import { jsonb } from "@/server/db/json";
+import {
+  extractEmailFromText,
+  isApplyFormUrl,
+  resolveApplyMode,
+} from "@/server/leads/emails";
 import { buildCoverDraft, buildResumeVariant } from "@/server/leads/variants";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
@@ -90,6 +96,31 @@ export const leadsRouter = createTRPCRouter({
       return updated;
     }),
 
+  setContactEmail: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().uuid(),
+        contactEmail: z.string().email(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const updated = await ctx.db
+        .updateTable("crm_leads")
+        .set({
+          contact_email: input.contactEmail.toLowerCase(),
+          updated_at: new Date(),
+        })
+        .where("id", "=", input.id)
+        .returningAll()
+        .executeTakeFirst();
+
+      if (!updated) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      return updated;
+    }),
+
   approveAndSend: protectedProcedure
     .input(
       z.object({
@@ -148,7 +179,7 @@ export const leadsRouter = createTRPCRouter({
               lead_id: lead.id,
               title: builtVariant.title,
               content: builtVariant.content,
-              highlights: builtVariant.highlights,
+              highlights: jsonb(builtVariant.highlights),
             })
             .returningAll()
             .executeTakeFirstOrThrow();
@@ -174,17 +205,79 @@ export const leadsRouter = createTRPCRouter({
         }
       }
 
-      const to =
+      const extracted =
         input.toEmail ??
         lead.contact_email ??
-        process.env.CRM_APPLY_TO_EMAIL ??
-        null;
+        extractEmailFromText(lead.notes) ??
+        extractEmailFromText(
+          typeof lead.raw === "string" ? lead.raw : JSON.stringify(lead.raw),
+        );
 
-      if (!to) {
+      if (extracted && extracted !== lead.contact_email) {
+        await ctx.db
+          .updateTable("crm_leads")
+          .set({ contact_email: extracted, updated_at: new Date() })
+          .where("id", "=", lead.id)
+          .execute();
+      }
+
+      const applyMode = resolveApplyMode({
+        contactEmail: extracted,
+        url: lead.url,
+        linkedinUrl:
+          typeof lead.raw === "object" && lead.raw && "linkedinUrl" in lead.raw
+            ? String((lead.raw as { linkedinUrl?: string }).linkedinUrl ?? "")
+            : null,
+      });
+      const formUrl =
+        (isApplyFormUrl(lead.url) ? lead.url : null) ??
+        (lead.url?.includes("linkedin.com/jobs") ? lead.url : null);
+
+      // Form-only leads: mark applied and return the apply URL (no fake self-email).
+      if (applyMode === "form" && !extracted) {
+        if (!formUrl && !lead.url) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message:
+              "No company email or apply form on this lead. Find a hiring email, save it on the lead, then approve.",
+          });
+        }
+
+        const applyUrl = formUrl ?? lead.url!;
+        await ctx.db
+          .updateTable("crm_leads")
+          .set({ status: "applied", updated_at: new Date() })
+          .where("id", "=", lead.id)
+          .execute();
+
+        await ctx.db
+          .updateTable("crm_applications")
+          .set({
+            channel: "manual",
+            sent_at: new Date(),
+            result: JSON.stringify({
+              mode: "form",
+              applyUrl,
+              note: "Open the apply form and submit using the prepared cover + resume variant.",
+            }),
+            error: null,
+          })
+          .where("id", "=", application.id)
+          .execute();
+
+        return {
+          ok: true,
+          mode: "form" as const,
+          to: null,
+          applyUrl,
+        };
+      }
+
+      if (!extracted) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message:
-            "No recipient email on this lead. Set contact email or CRM_APPLY_TO_EMAIL.",
+            "No company/recruiter email on this lead. Apollo could not resolve one. Paste a hiring email on the lead page, or open the job URL if it is an apply form.",
         });
       }
 
@@ -195,20 +288,24 @@ export const leadsRouter = createTRPCRouter({
         .execute();
 
       const body = [
+        lead.url ? `Role link: ${lead.url}` : null,
+        "",
         application.cover_draft,
         "",
         "----------",
         "Resume variant",
         "----------",
         variant.content,
-      ].join("\n");
+      ]
+        .filter((line) => line !== null)
+        .join("\n");
 
       try {
         const sendResult = await composioExecute({
           action: "GMAIL_SEND_EMAIL",
           params: {
-            to,
-            recipient_email: to,
+            to: extracted,
+            recipient_email: extracted,
             subject: `Application: ${lead.role} at ${lead.company}`,
             body,
             message: body,
@@ -218,6 +315,7 @@ export const leadsRouter = createTRPCRouter({
         await ctx.db
           .updateTable("crm_applications")
           .set({
+            channel: "gmail",
             sent_at: new Date(),
             result: JSON.stringify(sendResult.data),
             error: null,
@@ -233,8 +331,9 @@ export const leadsRouter = createTRPCRouter({
 
         return {
           ok: true,
-          mock: Boolean(sendResult.mock),
-          to,
+          mode: "email" as const,
+          to: extracted,
+          applyUrl: lead.url,
         };
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
