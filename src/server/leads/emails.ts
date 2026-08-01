@@ -12,7 +12,10 @@ const PREFERRED_EMAIL =
 
 /** ATS / job-board apply forms (not just a company homepage). */
 const APPLY_FORM_RE =
-  /boards\.greenhouse\.io|job-boards\.greenhouse|jobs\.lever\.co|jobs\.ashbyhq\.com|apply\.workable\.com|myworkdayjobs\.com|smartrecruiters\.com|bamboohr\.com|recruitee\.com|jobs\.jobvite\.com|wellfound\.com|angel\.co|linkedin\.com\/jobs|remotive\.com\/remote-jobs|remoteok\.com\/remote-jobs|remoteok\.com\/[rl]|indeed\.com\/viewjob|glassdoor\.com\/job/i;
+  /boards\.greenhouse\.io|job-boards\.greenhouse|jobs\.lever\.co|jobs\.ashbyhq\.com|apply\.workable\.com|myworkdayjobs\.com|smartrecruiters\.com|bamboohr\.com|recruitee\.com|jobs\.jobvite\.com|wellfound\.com|angel\.co|linkedin\.com\/jobs|jobicy\.com|arbeitnow\.com|remotive\.com\/remote-jobs|remoteok\.com\/remote-jobs|remoteok\.com\/[rl]|indeed\.com\/viewjob|glassdoor\.com\/job/i;
+
+const LINKEDIN_URL_RE =
+  /linkedin\.com\/(in|company|jobs|school)\//i;
 
 function decodeHtmlEntities(text: string) {
   return text
@@ -64,16 +67,27 @@ export function isApplyFormUrl(url?: string | null) {
   return APPLY_FORM_RE.test(url);
 }
 
-/** Lead is actionable if we can email someone or open an apply form. */
+export function isLinkedInUrl(url?: string | null) {
+  if (!url) return false;
+  return LINKEDIN_URL_RE.test(url);
+}
+
+/** Lead is actionable if we can email, open an ATS form, or open LinkedIn. */
 export function hasApplyPath(input: {
   contactEmail?: string | null;
   url?: string | null;
   linkedinUrl?: string | null;
 }) {
-  return Boolean(input.contactEmail || isApplyFormUrl(input.url) || isApplyFormUrl(input.linkedinUrl));
+  return Boolean(
+    input.contactEmail ||
+      isApplyFormUrl(input.url) ||
+      isApplyFormUrl(input.linkedinUrl) ||
+      isLinkedInUrl(input.linkedinUrl) ||
+      isLinkedInUrl(input.url),
+  );
 }
 
-export type ApplyMode = "email" | "form" | "none";
+export type ApplyMode = "email" | "form" | "linkedin" | "none";
 
 export function resolveApplyMode(input: {
   contactEmail?: string | null;
@@ -81,6 +95,11 @@ export function resolveApplyMode(input: {
   linkedinUrl?: string | null;
 }): ApplyMode {
   if (input.contactEmail) return "email";
-  if (isApplyFormUrl(input.url) || isApplyFormUrl(input.linkedinUrl)) return "form";
+  if (isApplyFormUrl(input.url) || isApplyFormUrl(input.linkedinUrl)) {
+    return "form";
+  }
+  if (isLinkedInUrl(input.linkedinUrl) || isLinkedInUrl(input.url)) {
+    return "linkedin";
+  }
   return "none";
 }

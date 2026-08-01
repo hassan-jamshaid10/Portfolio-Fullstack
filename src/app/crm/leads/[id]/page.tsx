@@ -24,7 +24,10 @@ export default function CrmLeadDetailPage() {
 
   const approve = trpc.leads.approveAndSend.useMutation({
     onSuccess: async (data) => {
-      if (data.mode === "form" && data.applyUrl) {
+      if (
+        (data.mode === "form" || data.mode === "linkedin") &&
+        data.applyUrl
+      ) {
         window.open(data.applyUrl, "_blank", "noopener,noreferrer");
       }
       await detail.refetch();
@@ -83,6 +86,9 @@ export default function CrmLeadDetailPage() {
           {lead.role}
         </h1>
         <p className="mt-1 text-lg text-teal">{lead.company}</p>
+        {lead.contact_phone ? (
+          <p className="mt-2 text-sm text-muted">Phone: {lead.contact_phone}</p>
+        ) : null}
         {lead.url ? (
           <a
             href={lead.url}
@@ -107,9 +113,9 @@ export default function CrmLeadDetailPage() {
           />
         </label>
         <p className="mt-2 text-xs text-muted">
-          Prefer a real hiring email (Apollo tries to find one). If only a job
-          form/URL exists, Approve opens that form with your prepared cover +
-          resume.
+          Prefer a real hiring email when you have one. On Apollo Free, most
+          leads are apply-form / LinkedIn URLs — Approve opens that link with
+          your prepared cover + resume.
         </p>
         <button
           type="button"
@@ -141,7 +147,7 @@ export default function CrmLeadDetailPage() {
               ? "Working…"
               : lead.contact_email || toEmail
                 ? "Approve & email recruiter"
-                : "Approve & open apply form"}
+                : "Approve & open LinkedIn / form"}
         </button>
         <button
           type="button"
@@ -155,8 +161,8 @@ export default function CrmLeadDetailPage() {
 
       {approve.isSuccess ? (
         <p className="mt-4 text-sm text-teal">
-          {approve.data.mode === "form"
-            ? `Apply form opened${approve.data.applyUrl ? `: ${approve.data.applyUrl}` : "."}`
+          {approve.data.mode === "form" || approve.data.mode === "linkedin"
+            ? `Opened ${approve.data.mode === "linkedin" ? "LinkedIn" : "apply form"}${approve.data.applyUrl ? `: ${approve.data.applyUrl}` : "."}`
             : `Emailed ${approve.data.to}.`}
         </p>
       ) : null}

@@ -18,6 +18,7 @@ export interface CrmLeadsTable {
   source: string;
   location: string | null;
   contact_email: string | null;
+  contact_phone: string | null;
   fit_score: number;
   status: LeadStatus;
   notes: string | null;

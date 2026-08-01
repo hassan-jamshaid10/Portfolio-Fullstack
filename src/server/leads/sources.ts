@@ -1,3 +1,6 @@
+import https from "node:https";
+import { URL } from "node:url";
+
 import {
   composioExecute,
   ensureComposioConnections,
@@ -40,12 +43,47 @@ function unwrapToolData(payload: unknown): unknown {
   return unwrapComposioData(payload) ?? payload;
 }
 
+function assertApolloPayload(action: string, payload: unknown) {
+  const root = asRecord(payload) ?? {};
+  const nested = asRecord(root.data) ?? root;
+  const message = pickString(
+    root.error,
+    nested.error,
+    nested.message,
+    root.message,
+  );
+  const status = nested.status_code ?? root.status_code ?? nested.status;
+
+  if (
+    message &&
+    (/failed to (search|enrich)|authorization failed|403|master api key|api_inaccessible|not authorized/i.test(
+      message,
+    ) ||
+      status === 403 ||
+      status === 401)
+  ) {
+    const freePlan =
+      /free plan|aren't included|not included in your|upgrade your plan|api_inaccessible/i.test(
+        message,
+      );
+    const hint = freePlan
+      ? " Apollo Free does not include People/Org Search or Enrichment APIs (even with a master key). Upgrade Apollo, or rely on free job boards (Jobicy/Arbeitnow) + Gmail/LinkedIn via Composio."
+      : /master api key|authorization failed|not authorized/i.test(message)
+        ? " Use an Apollo master key (paid plan) and reconnect Apollo in Composio for this user."
+        : "";
+    throw new Error(`${action}: ${message}.${hint}`);
+  }
+
+  return payload;
+}
+
 async function apolloViaComposio(
   action: string,
   params: Record<string, unknown>,
 ) {
   const result = await composioExecute({ action, params });
-  return unwrapToolData(result.data);
+  const unwrapped = unwrapToolData(result.data);
+  return assertApolloPayload(action, unwrapped);
 }
 
 export type IncomingLead = {
@@ -55,10 +93,11 @@ export type IncomingLead = {
   location?: string | null;
   description?: string | null;
   contactEmail?: string | null;
+  contactPhone?: string | null;
   contactName?: string | null;
   linkedinUrl?: string | null;
   apolloPersonId?: string | null;
-  source: "apollo" | "apollo+linkedin";
+  source: "apollo" | "apollo+linkedin" | "jobicy" | "arbeitnow" | "freelance";
 };
 
 export type LeadFilters = {
@@ -82,6 +121,35 @@ function pickString(...values: unknown[]) {
   return null;
 }
 
+function extractPhoneFromPerson(person: Record<string, unknown>) {
+  const direct = pickString(
+    person.phone,
+    person.mobile_phone,
+    person.direct_phone,
+    person.corporate_phone,
+    person.sanitized_phone,
+    person.primary_phone,
+  );
+  if (direct) return direct;
+
+  const numbers = person.phone_numbers;
+  if (Array.isArray(numbers)) {
+    for (const item of numbers) {
+      if (typeof item === "string" && item.trim()) return item.trim();
+      const row = asRecord(item);
+      const phone = pickString(
+        row?.sanitized_number,
+        row?.raw_number,
+        row?.number,
+        row?.phone,
+      );
+      if (phone) return phone;
+    }
+  }
+
+  return null;
+}
+
 function errorMessage(error: unknown) {
   if (!(error instanceof Error)) return String(error);
   const cause = (error as Error & { cause?: unknown }).cause;
@@ -89,6 +157,81 @@ function errorMessage(error: unknown) {
     return `${error.message} (${cause.message})`;
   }
   return error.message;
+}
+
+const BOARD_UA =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
+
+function fetchJsonOnce<T>(url: string, label: string, timeoutMs: number) {
+  return new Promise<T>((resolve, reject) => {
+    const target = new URL(url);
+    const req = https.request(
+      {
+        protocol: target.protocol,
+        hostname: target.hostname,
+        port: target.port || 443,
+        path: `${target.pathname}${target.search}`,
+        method: "GET",
+        family: 4,
+        headers: {
+          Accept: "application/json,text/plain,*/*",
+          "User-Agent": BOARD_UA,
+          "Accept-Language": "en-US,en;q=0.9",
+          Connection: "close",
+        },
+      },
+      (res) => {
+        const chunks: Buffer[] = [];
+        res.on("data", (chunk: Buffer) => chunks.push(chunk));
+        res.on("end", () => {
+          const body = Buffer.concat(chunks).toString("utf8");
+          const status = res.statusCode ?? 0;
+          if (status < 200 || status >= 300) {
+            reject(new Error(`${label} HTTP ${status}: ${body.slice(0, 180)}`));
+            return;
+          }
+          try {
+            resolve(JSON.parse(body) as T);
+          } catch {
+            reject(new Error(`${label}: invalid JSON`));
+          }
+        });
+      },
+    );
+
+    req.setTimeout(timeoutMs, () => {
+      req.destroy(new Error(`${label} timed out after ${timeoutMs}ms`));
+    });
+    req.on("error", (error) => {
+      reject(new Error(`${label}: ${errorMessage(error)}`));
+    });
+    req.end();
+  });
+}
+
+async function fetchJson<T>(
+  url: string,
+  label: string,
+  opts?: { timeoutMs?: number; retries?: number },
+): Promise<T> {
+  const timeoutMs = opts?.timeoutMs ?? 45_000;
+  const retries = opts?.retries ?? 3;
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= retries; attempt += 1) {
+    try {
+      return await fetchJsonOnce<T>(url, label, timeoutMs);
+    } catch (error) {
+      lastError = error;
+      if (attempt < retries) {
+        await new Promise((r) => setTimeout(r, 700 * attempt));
+      }
+    }
+  }
+
+  throw lastError instanceof Error
+    ? lastError
+    : new Error(`${label}: ${errorMessage(lastError)}`);
 }
 
 function unwrapComposioData(payload: unknown): unknown {
@@ -126,18 +269,36 @@ function dedupe(leads: IncomingLead[]) {
 }
 
 const REJECT_ROLE =
-  /\b(principal|staff|distinguished|director|vp\b|head of|architect|tech lead|devops|sre|graphic|designer|product manager|project manager|data scientist|marketing|sales|account executive|customer success)\b/i;
+  /\b(principal|staff|distinguished|director|vp\b|head of|architect|tech lead|engineering manager|devops|sre|graphic|designer|product manager|project manager|data scientist|marketing|sales|account executive|customer success)\b/i;
 
 function isRelevantEngineeringRole(role: string) {
   const r = role.toLowerCase();
-  if (REJECT_ROLE.test(r) && !/\b(junior|associate|entry)\b/.test(r)) {
+  const stack =
+    /software|full\s*stack|frontend|backend|react|next|node|typescript|javascript|developer|engineer|ai engineer|web developer|programmer/.test(
+      r,
+    );
+  const freelanceish =
+    /\b(freelance|freelancer|contract|contractor|consultant|gig|part[-\s]?time|hourly)\b/.test(
+      r,
+    );
+
+  if (REJECT_ROLE.test(r) && !/\b(junior|associate|entry)\b/.test(r) && !freelanceish) {
     return false;
   }
-  if (/\bsenior\b|\bsr\.?\b/.test(r) && !/\b(junior|associate|entry)\b/.test(r)) {
+  if (
+    /\bsenior\b|\bsr\.?\b/.test(r) &&
+    !/\b(junior|associate|entry)\b/.test(r) &&
+    !freelanceish
+  ) {
     return false;
   }
-  return /software|full\s*stack|frontend|backend|react|next|node|typescript|developer|engineer|ai engineer/.test(
-    r,
+  return stack || (freelanceish && /dev|engineer|react|next|node|typescript|web|saas/.test(r));
+}
+
+function isFreelanceLead(role: string, description?: string | null) {
+  const haystack = `${role} ${description ?? ""}`.toLowerCase();
+  return /\b(freelance|freelancer|contract|contractor|consultant|gig|part[-\s]?time|hourly|project-based)\b/.test(
+    haystack,
   );
 }
 
@@ -217,6 +378,7 @@ function normalizeApolloPeople(
           .filter(Boolean)
           .join(" "),
       );
+    const phone = extractPhoneFromPerson(row);
     const name = pickString(
       row.name,
       [row.first_name, row.last_name].filter(Boolean).join(" "),
@@ -262,6 +424,7 @@ function normalizeApolloPeople(
         ) ?? "Remote",
       description,
       contactEmail: email,
+      contactPhone: phone,
       contactName: name,
       apolloPersonId,
       source: linkedinUrl ? "apollo+linkedin" : "apollo",
@@ -446,7 +609,11 @@ async function enrichPeopleWithEmails(leads: IncomingLead[]) {
   if (!hasComposioKey()) return;
 
   const needsEnrichment = leads
-    .filter((lead) => !lead.contactEmail && (lead.apolloPersonId || lead.linkedinUrl))
+    .filter(
+      (lead) =>
+        (!lead.contactEmail || !lead.contactPhone) &&
+        (lead.apolloPersonId || lead.linkedinUrl),
+    )
     .slice(0, 8);
 
   for (const lead of needsEnrichment) {
@@ -455,6 +622,8 @@ async function enrichPeopleWithEmails(leads: IncomingLead[]) {
         ...(lead.apolloPersonId ? { id: lead.apolloPersonId } : {}),
         ...(lead.linkedinUrl ? { linkedin_url: lead.linkedinUrl } : {}),
         reveal_personal_emails: false,
+        // Phone unlock needs a public webhook_url; capture any inline phones Apollo returns.
+        reveal_phone_number: false,
       });
       const data = asRecord(enriched) ?? {};
       const person = asRecord(data.person) ?? data;
@@ -469,19 +638,21 @@ async function enrichPeopleWithEmails(leads: IncomingLead[]) {
               })
             : []),
         ) ?? extractEmailFromText(JSON.stringify(person));
+      const phone = extractPhoneFromPerson(person);
       const linkedinUrl = pickString(
         person.linkedin_url,
         lead.linkedinUrl,
         lead.url,
       );
       if (email) lead.contactEmail = email;
+      if (phone) lead.contactPhone = phone;
       if (linkedinUrl) {
         lead.linkedinUrl = linkedinUrl;
         lead.url = linkedinUrl;
         lead.source = "apollo+linkedin";
       }
     } catch {
-      // Enrichment is best-effort; keep the lead without email.
+      // Enrichment is best-effort; keep the lead without email/phone.
     }
   }
 }
@@ -512,6 +683,104 @@ async function enrichCompaniesViaLinkedIn(leads: IncomingLead[]) {
       `LinkedIn connection check failed. Connect LinkedIn in Composio for user ${process.env.COMPOSIO_USER_ID ?? "default"}. ${errorMessage(error)}`,
     );
   }
+}
+
+/** Free remote jobs from Jobicy (includes contract/freelance-friendly listings). */
+export async function fetchJobicyLeads(
+  _filters: LeadFilters,
+): Promise<IncomingLead[]> {
+  const tags = ["typescript", "javascript", "react", "nodejs"];
+  const results = await Promise.allSettled(
+    tags.map((tag) =>
+      fetchJson<{
+        jobs?: Array<Record<string, unknown>>;
+      }>(`https://jobicy.com/api/v2/remote-jobs?count=40&tag=${tag}`, `Jobicy(${tag})`, {
+        timeoutMs: 45_000,
+        retries: 3,
+      }),
+    ),
+  );
+
+  const leads: IncomingLead[] = [];
+  const failures: string[] = [];
+
+  for (const result of results) {
+    if (result.status === "rejected") {
+      failures.push(errorMessage(result.reason));
+      continue;
+    }
+    for (const job of result.value.jobs ?? []) {
+      const company = pickString(job.companyName, job.company);
+      const role = pickString(job.jobTitle, job.title);
+      if (!company || !role || !isRelevantEngineeringRole(role)) continue;
+      const description = pickString(
+        job.jobExcerpt,
+        job.jobDescription,
+        Array.isArray(job.jobIndustry) ? job.jobIndustry.join(" ") : null,
+      );
+      const url = pickString(job.url, job.jobUrl, job.applyUrl);
+      const freelance = isFreelanceLead(role, description);
+      leads.push({
+        company,
+        role: role.replace(/\s+/g, " ").trim(),
+        url,
+        location: pickString(job.jobGeo, job.jobType) ?? "Remote",
+        description,
+        contactEmail: extractEmailFromText(description),
+        source: freelance ? "freelance" : "jobicy",
+      });
+    }
+  }
+
+  if (!leads.length && failures.length === results.length) {
+    throw new Error(failures.join(" | "));
+  }
+
+  return dedupe(leads);
+}
+
+/** Free remote jobs from Arbeitnow. */
+export async function fetchArbeitnowLeads(
+  _filters: LeadFilters,
+): Promise<IncomingLead[]> {
+  const json = await fetchJson<{
+    data?: Array<Record<string, unknown>>;
+  }>("https://www.arbeitnow.com/api/job-board-api", "Arbeitnow", {
+    timeoutMs: 45_000,
+    retries: 3,
+  });
+
+  const leads: IncomingLead[] = [];
+  for (const job of json.data ?? []) {
+    const company = pickString(job.company_name, job.company);
+    const role = pickString(job.title, job.position);
+    if (!company || !role || !isRelevantEngineeringRole(role)) continue;
+
+    const tags = Array.isArray(job.tags) ? job.tags.join(" ") : "";
+    const description = pickString(job.description, tags);
+    const blob = `${role} ${description} ${tags}`.toLowerCase();
+    if (
+      !/react|typescript|javascript|next|node|full.?stack|frontend|backend|software/.test(
+        blob,
+      )
+    ) {
+      continue;
+    }
+
+    const url = pickString(job.url, job.apply_url);
+    const freelance = isFreelanceLead(role, description) || /freelance|contract/i.test(tags);
+    leads.push({
+      company,
+      role: role.replace(/\s+/g, " ").trim(),
+      url,
+      location: pickString(job.location) ?? "Remote",
+      description,
+      contactEmail: extractEmailFromText(description),
+      source: freelance ? "freelance" : "arbeitnow",
+    });
+  }
+
+  return dedupe(leads);
 }
 
 /** Apollo people via Composio Connect MCP (connected Apollo app). */
@@ -639,33 +908,60 @@ export function buildSourceBreakdown(leads: IncomingLead[]) {
     .sort((a, b) => b.count - a.count);
 }
 
+function isApolloPlanBlocked(errors: string[]) {
+  return errors.some((error) =>
+    /free plan|aren't included|upgrade your plan|api_inaccessible|mixed_people\/api_search|mixed_companies\/search|people\/match|people\/bulk_match/i.test(
+      error,
+    ),
+  );
+}
+
 /**
  * Intake sources (real data only, no mocks):
- * 1. Apollo people/jobs/emails via Composio Connect MCP (workspace apps)
- * 2. Optional LinkedIn stamp via Composio
+ * 1. Jobicy + Arbeitnow (free boards, includes freelance/contract)
+ * 2. Apollo via Composio when plan allows People Search (paid Apollo)
+ * 3. Optional LinkedIn stamp via Composio
  */
 export async function fetchOrganicLeads(filters: LeadFilters) {
   const errors: string[] = [];
   const collected: IncomingLead[] = [];
+
+  const boardTasks: Array<Promise<void>> = [
+    fetchJobicyLeads(filters)
+      .then((rows) => {
+        collected.push(...rows);
+      })
+      .catch((error: unknown) => {
+        errors.push(`jobicy: ${errorMessage(error)}`);
+      }),
+    fetchArbeitnowLeads(filters)
+      .then((rows) => {
+        collected.push(...rows);
+      })
+      .catch((error: unknown) => {
+        errors.push(`arbeitnow: ${errorMessage(error)}`);
+      }),
+  ];
+
   const apolloTasks: Array<Promise<void>> = [];
+  const apolloEnabled =
+    hasComposioKey() && process.env.COMPOSIO_SKIP_APOLLO !== "1";
 
   if (hasComposioKey()) {
     try {
       const connections = await ensureComposioConnections([
-        "apollo",
         "gmail",
         "linkedin",
-        "slack",
       ]);
       if (!connections.ok) {
         errors.push(connections.help);
       }
     } catch (error) {
-      errors.push(
-        `composio-connections: ${errorMessage(error)}`,
-      );
+      errors.push(`composio-connections: ${errorMessage(error)}`);
     }
+  }
 
+  if (apolloEnabled) {
     apolloTasks.push(
       fetchApolloPeopleLeads(filters).then((result) => {
         collected.push(...result.leads);
@@ -676,26 +972,36 @@ export async function fetchOrganicLeads(filters: LeadFilters) {
         errors.push(...result.errors);
       }),
     );
-  } else {
+  }
+
+  await Promise.all([...boardTasks, ...apolloTasks]);
+
+  if (isApolloPlanBlocked(errors)) {
     errors.push(
-      "COMPOSIO_API_KEY missing: Apollo via Composio is required for lead intake.",
+      "Apollo Free blocks People/Org Search + Enrichment. CRM will keep using Jobicy/Arbeitnow until you upgrade Apollo or set COMPOSIO_SKIP_APOLLO=1.",
     );
   }
 
-  await Promise.all(apolloTasks);
-
   let leads = dedupe(collected);
 
-  if (hasComposioKey() && leads.length) {
+  const apolloUsable =
+    apolloEnabled &&
+    !isApolloPlanBlocked(errors) &&
+    leads.some(
+      (lead) => lead.source === "apollo" || lead.source === "apollo+linkedin",
+    );
+
+  if (apolloUsable) {
     const apolloLeads = leads.filter(
       (lead) => lead.source === "apollo" || lead.source === "apollo+linkedin",
     );
     if (apolloLeads.length) {
       await enrichPeopleWithEmails(apolloLeads);
     }
-
     await attachHiringEmailsViaApollo(leads, errors);
+  }
 
+  if (hasComposioKey()) {
     try {
       await enrichCompaniesViaLinkedIn(
         leads.filter(
@@ -704,18 +1010,17 @@ export async function fetchOrganicLeads(filters: LeadFilters) {
         ),
       );
     } catch (error) {
-      // LinkedIn stamp is optional — do not fail intake.
       errors.push(`linkedin(optional): ${errorMessage(error)}`);
     }
   }
 
-  // Only keep leads you can actually apply to: company email OR apply form URL.
   leads = dedupe(leads)
     .filter((lead) => hasApplyPath(lead))
     .sort((a, b) => {
       const rank = (lead: IncomingLead) =>
         (lead.contactEmail ? 8 : 0) +
         (lead.linkedinUrl ? 3 : 0) +
+        (lead.source === "freelance" ? 2 : 0) +
         (lead.source === "apollo+linkedin" ? 2 : 0) +
         (lead.source === "apollo" ? 1 : 0);
       return rank(b) - rank(a);
@@ -726,7 +1031,7 @@ export async function fetchOrganicLeads(filters: LeadFilters) {
 
   if (!leads.length) {
     throw new Error(
-      `No actionable leads (need company email or apply form). Connect Apollo in Composio workspace ${process.env.COMPOSIO_WORKSPACE ?? "hjamshaid81_workspace"}. Details: ${
+      `No actionable leads (need company email, apply form, or LinkedIn URL). Details: ${
         errors.join(" | ") || "empty responses"
       }`,
     );
@@ -734,7 +1039,7 @@ export async function fetchOrganicLeads(filters: LeadFilters) {
 
   if (!withEmail) {
     errors.push(
-      "No company emails resolved this run — only apply-form / LinkedIn URLs available. Apollo via Composio must unlock hiring contacts for email outreach.",
+      "No company emails this run — Approve opens apply/LinkedIn URLs. Email unlock needs paid Apollo (or paste a hiring email on the lead).",
     );
   }
 

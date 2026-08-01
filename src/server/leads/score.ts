@@ -52,6 +52,14 @@ export function scoreLead(input: {
   ) {
     score += 8;
   }
+  if (
+    haystack.includes("freelance") ||
+    haystack.includes("contract") ||
+    haystack.includes("consultant") ||
+    input.source === "freelance"
+  ) {
+    score += 8;
+  }
   if (/\bsenior\b|\bsr\.?\b|staff|principal/.test(haystack)) score -= 12;
 
   return Math.max(0, Math.min(100, score));

@@ -143,6 +143,7 @@ export async function runDailyLeadIntake() {
           source: lead.source,
           location: lead.location ?? null,
           contact_email: lead.contactEmail ?? null,
+          contact_phone: lead.contactPhone ?? null,
           fit_score: lead.fit_score,
           status: "ready",
           notes,
@@ -154,6 +155,7 @@ export async function runDailyLeadIntake() {
             location: lead.location ?? null,
             source: lead.source,
             contactEmail: lead.contactEmail ?? null,
+            contactPhone: lead.contactPhone ?? null,
             contactName: lead.contactName ?? null,
             applyMode: lead.applyMode,
             fit_score: lead.fit_score,
@@ -177,7 +179,11 @@ export async function runDailyLeadIntake() {
         .insertInto("crm_applications")
         .values({
           lead_id: created.id,
-          channel: lead.contactEmail ? "gmail" : "manual",
+          channel: lead.contactEmail
+            ? "gmail"
+            : lead.linkedinUrl || lead.url?.includes("linkedin.com")
+              ? "linkedin"
+              : "manual",
           cover_draft: cover,
         })
         .execute();

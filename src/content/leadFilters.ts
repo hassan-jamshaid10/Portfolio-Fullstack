@@ -28,6 +28,9 @@ export const defaultLeadFilters = {
     "Node.js Developer",
     "AI Engineer",
     "React Native Developer",
+    "Freelance Developer",
+    "Contract Software Engineer",
+    "Freelance Full Stack Developer",
   ],
   locations: [
     "Remote",
@@ -45,6 +48,8 @@ export const defaultLeadFilters = {
     ...masterResume.skills.ai,
     "SaaS",
     "Remote",
+    "Freelance",
+    "Contract",
   ],
   dailyCap: 15,
   minFitScore: 50,

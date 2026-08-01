@@ -5,6 +5,7 @@ import { jsonb } from "@/server/db/json";
 import {
   extractEmailFromText,
   isApplyFormUrl,
+  isLinkedInUrl,
   resolveApplyMode,
 } from "@/server/leads/emails";
 import { buildCoverDraft, buildResumeVariant } from "@/server/leads/variants";
@@ -221,29 +222,33 @@ export const leadsRouter = createTRPCRouter({
           .execute();
       }
 
+      const linkedinUrl =
+        typeof lead.raw === "object" && lead.raw && "linkedinUrl" in lead.raw
+          ? String((lead.raw as { linkedinUrl?: string }).linkedinUrl ?? "")
+          : null;
       const applyMode = resolveApplyMode({
         contactEmail: extracted,
         url: lead.url,
-        linkedinUrl:
-          typeof lead.raw === "object" && lead.raw && "linkedinUrl" in lead.raw
-            ? String((lead.raw as { linkedinUrl?: string }).linkedinUrl ?? "")
-            : null,
+        linkedinUrl,
       });
       const formUrl =
         (isApplyFormUrl(lead.url) ? lead.url : null) ??
-        (lead.url?.includes("linkedin.com/jobs") ? lead.url : null);
+        (isApplyFormUrl(linkedinUrl) ? linkedinUrl : null);
+      const profileUrl =
+        (isLinkedInUrl(linkedinUrl) ? linkedinUrl : null) ??
+        (isLinkedInUrl(lead.url) ? lead.url : null);
 
-      // Form-only leads: mark applied and return the apply URL (no fake self-email).
-      if (applyMode === "form" && !extracted) {
-        if (!formUrl && !lead.url) {
+      // Form / LinkedIn leads: open URL (no fake self-email).
+      if ((applyMode === "form" || applyMode === "linkedin") && !extracted) {
+        const applyUrl = formUrl ?? profileUrl ?? lead.url;
+        if (!applyUrl) {
           throw new TRPCError({
             code: "BAD_REQUEST",
             message:
-              "No company email or apply form on this lead. Find a hiring email, save it on the lead, then approve.",
+              "No company email, apply form, or LinkedIn URL on this lead. Find a hiring email, save it on the lead, then approve.",
           });
         }
 
-        const applyUrl = formUrl ?? lead.url!;
         await ctx.db
           .updateTable("crm_leads")
           .set({ status: "applied", updated_at: new Date() })
@@ -253,12 +258,15 @@ export const leadsRouter = createTRPCRouter({
         await ctx.db
           .updateTable("crm_applications")
           .set({
-            channel: "manual",
+            channel: applyMode === "linkedin" ? "linkedin" : "manual",
             sent_at: new Date(),
             result: JSON.stringify({
-              mode: "form",
+              mode: applyMode,
               applyUrl,
-              note: "Open the apply form and submit using the prepared cover + resume variant.",
+              note:
+                applyMode === "linkedin"
+                  ? "Open the LinkedIn profile/job and send outreach using the prepared cover + resume variant."
+                  : "Open the apply form and submit using the prepared cover + resume variant.",
             }),
             error: null,
           })
@@ -267,7 +275,7 @@ export const leadsRouter = createTRPCRouter({
 
         return {
           ok: true,
-          mode: "form" as const,
+          mode: applyMode,
           to: null,
           applyUrl,
         };

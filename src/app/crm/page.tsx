@@ -136,8 +136,8 @@ export default function CrmHomePage() {
             Approve to send
           </h1>
           <p className="mt-2 max-w-2xl text-sm text-muted">
-            Daily cron finds jobs, scores them, and generates cover + resume
-            drafts. Your only job is Approve or Reject.
+            Daily cron finds remote/freelance roles (Jobicy + Arbeitnow), scores
+            them, and prepares cover + resume. Your only job is Approve or Reject.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
@@ -239,7 +239,8 @@ export default function CrmHomePage() {
                 <td className="px-4 py-3">{lead.fit_score}</td>
                 <td className="px-4 py-3 text-muted">
                   {lead.contact_email ??
-                    (lead.url ? "Apply form / URL" : "No email")}
+                    lead.contact_phone ??
+                    (lead.url ? "LinkedIn / form" : "No contact")}
                 </td>
                 <td className="px-4 py-3 capitalize">{lead.status}</td>
                 <td className="px-4 py-3">
