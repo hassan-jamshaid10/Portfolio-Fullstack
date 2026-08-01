@@ -67,8 +67,7 @@ export default function CrmLeadDetailPage() {
     return <div className="p-8 text-muted">Lead not found.</div>;
   }
 
-  const { lead, variants, applications } = detail.data;
-  const latestVariant = variants[0];
+  const { lead, applications } = detail.data;
   const latestApp = applications[0];
   const canApprove = lead.status === "ready" || lead.status === "new";
 
@@ -113,9 +112,9 @@ export default function CrmLeadDetailPage() {
           />
         </label>
         <p className="mt-2 text-xs text-muted">
-          Prefer a real hiring email when you have one. On Apollo Free, most
-          leads are apply-form / LinkedIn URLs — Approve opens that link with
-          your prepared cover + resume.
+          Prefer a real hiring email when you have one. Form/LinkedIn leads open
+          the apply URL; email leads send the cover letter with your PDF resume
+          attached.
         </p>
         <button
           type="button"
@@ -146,7 +145,7 @@ export default function CrmLeadDetailPage() {
             : approve.isPending
               ? "Working…"
               : lead.contact_email || toEmail
-                ? "Approve & email recruiter"
+                ? "Approve & email + PDF resume"
                 : "Approve & open LinkedIn / form"}
         </button>
         <button
@@ -176,7 +175,7 @@ export default function CrmLeadDetailPage() {
       <section className="mt-8 grid gap-6 md:grid-cols-2">
         <div className="border border-line p-4">
           <h2 className="font-[family-name:var(--font-display)] text-lg font-bold">
-            Cover draft
+            Cover letter
           </h2>
           <pre className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-ink-soft/90">
             {latestApp?.cover_draft ?? "Will auto-generate on approve."}
@@ -184,11 +183,20 @@ export default function CrmLeadDetailPage() {
         </div>
         <div className="border border-line p-4">
           <h2 className="font-[family-name:var(--font-display)] text-lg font-bold">
-            Resume variant
+            Resume
           </h2>
-          <pre className="mt-3 max-h-[420px] overflow-auto whitespace-pre-wrap text-sm leading-relaxed text-ink-soft/90">
-            {latestVariant?.content ?? "Will auto-generate on approve."}
-          </pre>
+          <p className="mt-3 text-sm text-muted">
+            On Approve & email, Gmail sends the cover letter and attaches{" "}
+            <a
+              href="/Hassan_Jamshaid_Resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-teal underline"
+            >
+              Hassan_Jamshaid_Resume.pdf
+            </a>
+            .
+          </p>
         </div>
       </section>
     </div>

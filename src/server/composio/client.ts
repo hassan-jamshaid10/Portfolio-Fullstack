@@ -28,6 +28,7 @@ type ToolkitStatus = {
 const REQUIRED_TOOLKITS = ["apollo", "gmail", "linkedin", "slack"] as const;
 
 const globalForComposio = globalThis as unknown as {
+  crmComposioSdk?: { apiKey: string; client: Composio };
   crmComposioProjectSession?: {
     apiKey: string;
     userId: string;
@@ -59,6 +60,68 @@ function getUserId() {
     process.env.COMPOSIO_USER_ID?.trim() ||
     "pg-test-8d99848e-3d76-4e4f-9b19-a91c7a1a3749"
   );
+}
+
+function getComposioClient() {
+  const apiKey = getApiKey();
+  const cached = globalForComposio.crmComposioSdk;
+  if (cached?.apiKey === apiKey) return cached.client;
+
+  const client = new Composio({ apiKey });
+  globalForComposio.crmComposioSdk = { apiKey, client };
+  return client;
+}
+
+type FileUploadable = { name: string; mimetype: string; s3key: string };
+
+function isFileUploadable(value: unknown): value is FileUploadable {
+  if (!value || typeof value !== "object") return false;
+  const row = value as Record<string, unknown>;
+  return (
+    typeof row.name === "string" &&
+    typeof row.mimetype === "string" &&
+    typeof row.s3key === "string"
+  );
+}
+
+/** Stage local paths / URLs into FileUploadable for tools that don't auto-upload. */
+async function prepareExecuteParams(
+  action: string,
+  params: Record<string, unknown>,
+) {
+  const attachment = params.attachment;
+  if (attachment == null) return params;
+
+  if (isFileUploadable(attachment)) return params;
+  if (Array.isArray(attachment) && attachment.every(isFileUploadable)) {
+    return params;
+  }
+
+  const toolkit = action.split("_")[0]?.toLowerCase() || "gmail";
+  const composio = getComposioClient();
+  const sources = Array.isArray(attachment) ? attachment : [attachment];
+  const uploaded: FileUploadable[] = [];
+
+  for (const source of sources) {
+    if (isFileUploadable(source)) {
+      uploaded.push(source);
+      continue;
+    }
+    if (typeof source !== "string" || !source.trim()) {
+      throw new Error(`${action}: invalid attachment value`);
+    }
+    const file = await composio.files.upload({
+      file: source.trim(),
+      toolSlug: action,
+      toolkitSlug: toolkit,
+    });
+    uploaded.push(file);
+  }
+
+  return {
+    ...params,
+    attachment: uploaded.length === 1 ? uploaded[0] : uploaded,
+  };
 }
 
 function resolveAccount(action: string, explicit?: string) {
@@ -120,7 +183,7 @@ async function getProjectSession() {
   // Drop stale hot-reload cache (older shapes lacked listToolkits).
   globalForComposio.crmComposioProjectSession = undefined;
 
-  const composio = new Composio({ apiKey });
+  const composio = getComposioClient();
   const session = await composio.create(userId, {
     mcp: true,
     toolkits: [...REQUIRED_TOOLKITS],
@@ -319,6 +382,34 @@ export async function ensureComposioConnections(
   };
 }
 
+function assertToolSuccess(action: string, data: unknown) {
+  const root =
+    data && typeof data === "object" ? (data as Record<string, unknown>) : null;
+  if (!root) return;
+
+  const nested =
+    root.data && typeof root.data === "object"
+      ? (root.data as Record<string, unknown>)
+      : null;
+  const errorText = [root.error, nested?.error, nested?.message, root.message]
+    .filter((value) => typeof value === "string" && value.trim())
+    .join(" | ");
+  const status = nested?.status_code ?? root.status_code ?? nested?.status;
+  const failed =
+    root.successful === false ||
+    status === 400 ||
+    status === 401 ||
+    status === 403 ||
+    status === 422 ||
+    /invalid request|authorization failed|failed to |not authorized/i.test(
+      errorText,
+    );
+
+  if (failed && errorText) {
+    throw new Error(`${action}: ${errorText}`);
+  }
+}
+
 export async function composioExecute<T = unknown>({
   action,
   params = {},
@@ -331,13 +422,15 @@ export async function composioExecute<T = unknown>({
   const session = await getProjectSession();
   const account = resolveAccount(action, connectedAccountId);
   const toolkit = action.split("_")[0]?.toLowerCase();
+  const prepared = await prepareExecuteParams(action, params);
 
   try {
     const data = await session.execute(
       action,
-      params,
+      prepared,
       account ? { account } : undefined,
     );
+    assertToolSuccess(action, data);
     return { ok: true, data: data as T, via: "session" };
   } catch (sessionError) {
     const message =
@@ -375,7 +468,7 @@ export async function composioExecute<T = unknown>({
           tools: [
             {
               tool_slug: action,
-              arguments: params,
+              arguments: prepared,
               ...(account ? { account } : {}),
             },
           ],
@@ -383,6 +476,7 @@ export async function composioExecute<T = unknown>({
           thought: `Hassan CRM: ${action}`,
         },
       );
+      assertToolSuccess(action, data);
       return { ok: true, data: data as T, via: "mcp" };
     } catch (mcpError) {
       const b = mcpError instanceof Error ? mcpError.message : String(mcpError);

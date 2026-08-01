@@ -1,14 +1,17 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { composioExecute } from "@/server/composio/client";
-import { jsonb } from "@/server/db/json";
 import {
   extractEmailFromText,
   isApplyFormUrl,
   isLinkedInUrl,
   resolveApplyMode,
 } from "@/server/leads/emails";
-import { buildCoverDraft, buildResumeVariant } from "@/server/leads/variants";
+import {
+  getResumePdfAttachment,
+  getResumePdfPath,
+} from "@/server/leads/resumePdf";
+import { buildCoverDraft } from "@/server/leads/variants";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 const statusSchema = z.enum([
@@ -58,13 +61,6 @@ export const leadsRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND" });
       }
 
-      const variants = await ctx.db
-        .selectFrom("crm_resume_variants")
-        .selectAll()
-        .where("lead_id", "=", input.id)
-        .orderBy("created_at", "desc")
-        .execute();
-
       const applications = await ctx.db
         .selectFrom("crm_applications")
         .selectAll()
@@ -72,7 +68,7 @@ export const leadsRouter = createTRPCRouter({
         .orderBy("created_at", "desc")
         .execute();
 
-      return { lead, variants, applications };
+      return { lead, applications };
     }),
 
   updateStatus: protectedProcedure
@@ -154,56 +150,30 @@ export const leadsRouter = createTRPCRouter({
         .orderBy("created_at", "desc")
         .executeTakeFirst();
 
-      let variant = await ctx.db
-        .selectFrom("crm_resume_variants")
-        .selectAll()
-        .where("lead_id", "=", lead.id)
-        .orderBy("created_at", "desc")
-        .executeTakeFirst();
+      // Always rebuild a clean cover; resume is the PDF attachment only.
+      const cover = buildCoverDraft({
+        company: lead.company,
+        role: lead.role,
+        notes: lead.notes,
+      });
 
-      // Auto-generate anything missing so approval is one click.
-      if (!variant || !application?.cover_draft) {
-        const builtVariant = buildResumeVariant({
-          company: lead.company,
-          role: lead.role,
-        });
-        const cover = buildCoverDraft({
-          company: lead.company,
-          role: lead.role,
-          notes: lead.notes,
-        });
-
-        if (!variant) {
-          variant = await ctx.db
-            .insertInto("crm_resume_variants")
-            .values({
-              lead_id: lead.id,
-              title: builtVariant.title,
-              content: builtVariant.content,
-              highlights: jsonb(builtVariant.highlights),
-            })
-            .returningAll()
-            .executeTakeFirstOrThrow();
-        }
-
-        if (!application) {
-          application = await ctx.db
-            .insertInto("crm_applications")
-            .values({
-              lead_id: lead.id,
-              channel: "gmail",
-              cover_draft: cover,
-            })
-            .returningAll()
-            .executeTakeFirstOrThrow();
-        } else if (!application.cover_draft) {
-          application = await ctx.db
-            .updateTable("crm_applications")
-            .set({ cover_draft: cover })
-            .where("id", "=", application.id)
-            .returningAll()
-            .executeTakeFirstOrThrow();
-        }
+      if (!application) {
+        application = await ctx.db
+          .insertInto("crm_applications")
+          .values({
+            lead_id: lead.id,
+            channel: "gmail",
+            cover_draft: cover,
+          })
+          .returningAll()
+          .executeTakeFirstOrThrow();
+      } else {
+        application = await ctx.db
+          .updateTable("crm_applications")
+          .set({ cover_draft: cover })
+          .where("id", "=", application.id)
+          .returningAll()
+          .executeTakeFirstOrThrow();
       }
 
       const extracted =
@@ -265,8 +235,8 @@ export const leadsRouter = createTRPCRouter({
               applyUrl,
               note:
                 applyMode === "linkedin"
-                  ? "Open the LinkedIn profile/job and send outreach using the prepared cover + resume variant."
-                  : "Open the apply form and submit using the prepared cover + resume variant.",
+                  ? "Open the LinkedIn profile/job and send outreach using the prepared cover + your PDF resume."
+                  : "Open the apply form and submit using the prepared cover + your PDF resume.",
             }),
             error: null,
           })
@@ -295,18 +265,14 @@ export const leadsRouter = createTRPCRouter({
         .where("id", "=", lead.id)
         .execute();
 
-      const body = [
-        lead.url ? `Role link: ${lead.url}` : null,
-        "",
-        application.cover_draft,
-        "",
-        "----------",
-        "Resume variant",
-        "----------",
-        variant.content,
-      ]
-        .filter((line) => line !== null)
-        .join("\n");
+      // Cover letter only in the body; resume PDF staged then attached.
+      const body = application.cover_draft ?? cover;
+      let resumeAttachment: string;
+      try {
+        resumeAttachment = getResumePdfPath();
+      } catch {
+        resumeAttachment = getResumePdfAttachment();
+      }
 
       try {
         const sendResult = await composioExecute({
@@ -314,9 +280,10 @@ export const leadsRouter = createTRPCRouter({
           params: {
             to: extracted,
             recipient_email: extracted,
-            subject: `Application: ${lead.role} at ${lead.company}`,
+            subject: `Application: ${lead.role} at ${lead.company} — Hassan Jamshaid`,
             body,
-            message: body,
+            is_html: false,
+            attachment: resumeAttachment,
           },
         });
 

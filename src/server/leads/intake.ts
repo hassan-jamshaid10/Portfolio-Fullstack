@@ -5,15 +5,19 @@ import { composioNotifySafe } from "@/server/composio/client";
 import { hasApplyPath, resolveApplyMode } from "@/server/leads/emails";
 import { fetchOrganicLeads } from "@/server/leads/sources";
 import { scoreLead } from "@/server/leads/score";
-import { buildCoverDraft, buildResumeVariant } from "@/server/leads/variants";
+import { buildCoverDraft } from "@/server/leads/variants";
 
+/** Short plain-text snippet for CRM notes / stack hints — not email body. */
 function sanitizeNotes(description?: string | null) {
   if (!description) return null;
   return description
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
     .replace(/<[^>]+>/g, " ")
+    .replace(/&[a-z]+;/gi, " ")
     .replace(/\s+/g, " ")
     .trim()
-    .slice(0, 1500);
+    .slice(0, 400);
 }
 
 type LeadFilters = {
@@ -124,10 +128,6 @@ export async function runDailyLeadIntake() {
       if (existing) continue;
 
       const notes = sanitizeNotes(lead.description);
-      const variant = buildResumeVariant({
-        company: lead.company,
-        role: lead.role,
-      });
       const cover = buildCoverDraft({
         company: lead.company,
         role: lead.role,
@@ -164,16 +164,6 @@ export async function runDailyLeadIntake() {
         })
         .returningAll()
         .executeTakeFirstOrThrow();
-
-      await db
-        .insertInto("crm_resume_variants")
-        .values({
-          lead_id: created.id,
-          title: variant.title,
-          content: variant.content,
-          highlights: jsonb(variant.highlights),
-        })
-        .execute();
 
       await db
         .insertInto("crm_applications")

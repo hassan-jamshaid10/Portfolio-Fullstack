@@ -137,7 +137,8 @@ export default function CrmHomePage() {
           </h1>
           <p className="mt-2 max-w-2xl text-sm text-muted">
             Daily cron finds remote/freelance roles (Jobicy + Arbeitnow), scores
-            them, and prepares cover + resume. Your only job is Approve or Reject.
+            them, and prepares a cover letter. Approve emails with your PDF
+            resume attached.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">

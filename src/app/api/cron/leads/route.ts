@@ -35,7 +35,8 @@ export async function GET(request: Request) {
     const result = await runDailyLeadIntake();
     return NextResponse.json({
       ok: true,
-      message: "Leads generated with cover + resume drafts. Approve in /crm to send.",
+      message:
+        "Leads generated with cover drafts. Approve in /crm to email with PDF resume.",
       ...result,
     });
   } catch (error) {
