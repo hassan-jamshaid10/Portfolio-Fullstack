@@ -22,6 +22,25 @@ export const site = {
     support:
       "Full-stack engineer for e-commerce ops, CRM, and AI platforms. Next.js, Spring Boot, FastAPI, and typed APIs in production.",
   },
+  seo: {
+    title: "Hassan Jamshaid | Software Engineer & Full-Stack Developer",
+    description:
+      "Hassan Jamshaid is a Software Engineer and full-stack developer in Lahore, Pakistan. Building multi-tenant SaaS, e-commerce ops, CRM platforms, and AI systems with Next.js, Spring Boot, FastAPI, and tRPC.",
+    keywords: [
+      "Hassan Jamshaid",
+      "Hassan Jamshaid Software Engineer",
+      "Hassan Jamshaid Full Stack Developer",
+      "Software Engineer Lahore",
+      "Full Stack Developer Pakistan",
+      "Next.js Developer",
+      "Spring Boot Developer",
+      "FastAPI Developer",
+      "tRPC Developer",
+      "Remote Software Engineer",
+      "SaaS Engineer",
+      "AI Engineer Pakistan",
+    ],
+  },
   about: {
     title: "Full-stack engineer. Production SaaS.",
     body: "I build multi-tenant platforms end to end: third-party integrations (Amazon FBA/FBM, ShipHero, DataChannel, BigQuery), warehousing and procurement modules, and CRM workflows. Strong across Next.js and Vue on the frontend; Spring Boot, Node.js, FastAPI, and tRPC on the backend, with hands-on Agentic RAG experience. AWS Cloud Foundations certified.",

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Figtree, JetBrains_Mono } from "next/font/google";
+import { JsonLd } from "@/components/JsonLd";
 import { site } from "@/content/site";
 import "./globals.css";
 
@@ -21,14 +22,48 @@ const mono = JetBrains_Mono({
   weight: ["400", "500"],
 });
 
+const baseUrl = site.website.replace(/\/$/, "");
+
 export const metadata: Metadata = {
-  title: `${site.fullName} | ${site.role}`,
-  description: site.hero.support,
-  openGraph: {
-    title: `${site.fullName} | ${site.role}`,
-    description: site.hero.support,
-    type: "website",
+  metadataBase: new URL(baseUrl),
+  title: {
+    default: site.seo.title,
+    template: `%s | ${site.fullName}`,
   },
+  description: site.seo.description,
+  keywords: [...site.seo.keywords],
+  authors: [{ name: site.fullName, url: baseUrl }],
+  creator: site.fullName,
+  publisher: site.fullName,
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: baseUrl,
+    siteName: `${site.fullName} Portfolio`,
+    title: site.seo.title,
+    description: site.seo.description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: site.seo.title,
+    description: site.seo.description,
+    creator: "@hassanjamshaid10",
+  },
+  category: "technology",
 };
 
 export default function RootLayout({
@@ -41,7 +76,10 @@ export default function RootLayout({
       lang="en"
       className={`${display.variable} ${body.variable} ${mono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-paper text-ink">{children}</body>
+      <body className="min-h-full flex flex-col bg-paper text-ink">
+        <JsonLd />
+        {children}
+      </body>
     </html>
   );
 }
