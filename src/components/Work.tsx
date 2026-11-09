@@ -1,38 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import { useRef, type PointerEvent } from "react";
 import { Magnetic } from "@/components/portfolio/Magnetic";
-import { projectHref, site, type Project } from "@/content/site";
+import { site, type Project } from "@/content/site";
 import { hasFinePointer, prefersReducedMotion } from "@/lib/motion";
 
-const bars = ["40%", "70%", "55%", "90%", "65%", "80%"];
-
-function Explore({ project }: { project: Project }) {
-  const href = projectHref(project);
-  if (!href) {
-    return (
-      <span className="explore is-pending" aria-hidden="true">
-        ↗
-      </span>
-    );
-  }
-  const external = href.startsWith("http");
-  return (
-    <a
-      className="explore"
-      href={href}
-      aria-label={`Open ${project.title}`}
-      {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
-    >
-      ↗
-    </a>
-  );
-}
-
-function ProjectCard({ project, index }: { project: Project; index: number }) {
+function ProjectCard({ project }: { project: Project }) {
   const ref = useRef<HTMLElement>(null);
-  const href = projectHref(project);
-  const size = index === 0 ? "big" : index === 1 ? "mid" : "third";
 
   function onMove(event: PointerEvent<HTMLElement>) {
     const card = ref.current;
@@ -42,8 +17,8 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
     const py = (event.clientY - rect.top) / rect.height;
     card.style.setProperty("--mx", `${px * 100}%`);
     card.style.setProperty("--my", `${py * 100}%`);
-    const rx = (py - 0.5) * -7;
-    const ry = (px - 0.5) * 9;
+    const rx = (py - 0.5) * -6;
+    const ry = (px - 0.5) * 8;
     card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
   }
 
@@ -56,34 +31,40 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   return (
     <article
       ref={ref}
-      className={`card ${size}`}
-      data-cursor={href ? "view" : undefined}
+      className="card"
+      data-cursor={project.link ? "view" : undefined}
       onPointerMove={onMove}
       onPointerLeave={onLeave}
     >
-      <span className="num">{project.id}</span>
-      <div className="mono">{project.company}</div>
-      <h3>{project.title}</h3>
-      <p>{project.summary}</p>
-      {index === 0 ? (
-        <div className="ui" aria-hidden="true">
-          <i style={{ width: "40%" }} />
-          <i style={{ width: "70%" }} />
-          <div className="bars">
-            {bars.map((height) => (
-              <b key={height} style={{ height }} />
-            ))}
-          </div>
-        </div>
-      ) : null}
-      <div className="chips">
-        {project.tags.map((tag) => (
-          <span key={tag}>{tag}</span>
-        ))}
+      <div className="card-cover">
+        <Image src={project.cover} alt="" width={1400} height={820} sizes="(max-width: 800px) 100vw, 33vw" />
+        <span className="num">{project.id}</span>
       </div>
-      <Magnetic className="explore-wrap" strength={0.35}>
-        <Explore project={project} />
-      </Magnetic>
+      <div className="card-body">
+        <div className="card-meta">
+          <span className="mono">{project.role}</span>
+          <span className="mono">{project.dates}</span>
+        </div>
+        <h3>{project.title}</h3>
+        <p>{project.summary}</p>
+        <div className="chips">
+          {project.tags.map((tag) => (
+            <span key={tag}>{tag}</span>
+          ))}
+        </div>
+        {project.link ? (
+          <Magnetic strength={0.28}>
+            <a
+              className="btn solid card-link"
+              href={project.link.href}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {project.link.label} ↗
+            </a>
+          </Magnetic>
+        ) : null}
+      </div>
     </article>
   );
 }
@@ -102,8 +83,8 @@ export function Work() {
           <p>{site.workIntro}</p>
         </div>
         <div className="work-grid">
-          {site.projects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
+          {site.projects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
           ))}
         </div>
       </div>
