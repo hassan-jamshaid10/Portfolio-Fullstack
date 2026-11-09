@@ -27,14 +27,9 @@ export function getResumePdfUrl() {
 
 /** Local path (optional fallback when using SDK auto-upload). */
 export function getResumePdfPath() {
-  const candidates = [
-    path.join(process.cwd(), "public", RESUME_PDF_FILENAME),
-    path.join(process.cwd(), RESUME_PDF_FILENAME),
-  ];
-
-  for (const candidate of candidates) {
-    if (existsSync(candidate)) return candidate;
-  }
+  // Scoped to public/ so Turbopack does not trace the whole project into the NFT bundle.
+  const candidate = path.join(process.cwd(), "public", RESUME_PDF_FILENAME);
+  if (existsSync(candidate)) return candidate;
 
   throw new Error(
     `Resume PDF not found at public/${RESUME_PDF_FILENAME}. Add the file before sending applications.`,
