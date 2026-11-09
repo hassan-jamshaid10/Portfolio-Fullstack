@@ -1,6 +1,16 @@
+import { siteUrl } from "@/lib/site-url";
+
 /**
- * Portfolio content sourced from Hassan Jamshaid's resume.
+ * Portfolio content from the live site (content.json) plus the phone number
+ * Hassan supplied for this redesign. Do not invent facts.
+ *
+ * Project `links.live` / `links.repo` stay null until a real public URL exists.
  */
+export type ProjectLinks = {
+  live: string | null;
+  repo: string | null;
+};
+
 export const site = {
   name: "Hassan Jamshaid",
   fullName: "Hassan Jamshaid",
@@ -8,10 +18,11 @@ export const site = {
   lastName: "Jamshaid",
   role: "Software Engineer | Full-Stack",
   location: "Lahore, Pakistan | Remote",
-  availability: "Open to remote roles & freelance",
+  availability: "Open to remote roles · Lahore, PK",
   email: "hjamshaid81@gmail.com",
-  phone: "+92-312-4384133",
-  website: "https://hassanjamshaid.tech",
+  phone: "+92 312 4384133",
+  phoneHref: "tel:+923124384133",
+  website: siteUrl,
   resumeUrl: "/Hassan_Jamshaid_Resume.pdf",
   social: {
     linkedin: "https://www.linkedin.com/in/hassanjamshaid10",
@@ -41,9 +52,42 @@ export const site = {
       "AI Engineer Pakistan",
     ],
   },
+  marquee: [
+    "Next.js",
+    "Spring Boot",
+    "FastAPI",
+    "tRPC",
+    "PostgreSQL",
+    "BigQuery",
+    "Agentic RAG",
+    "LangChain",
+    "Vue 3",
+    "React Native",
+    "Docker",
+    "AWS",
+  ],
+  quickFacts: [
+    { label: "Now", value: "Liffey Logics", detail: "Associate Software Engineer" },
+    { label: "Focus", value: "SaaS & AI systems", detail: "Multi-tenant platforms that ship" },
+    { label: "Certified", value: "AWS Cloud Foundations", detail: "Amazon Web Services Academy" },
+    { label: "Base", value: "Lahore | Remote", detail: "Open to global teams" },
+  ],
   about: {
     title: "Full-stack engineer. Production SaaS.",
-    body: "I build multi-tenant platforms end to end: third-party integrations (Amazon FBA/FBM, ShipHero, DataChannel, BigQuery), warehousing and procurement modules, and CRM workflows. Strong across Next.js and Vue on the frontend; Spring Boot, Node.js, FastAPI, and tRPC on the backend, with hands-on Agentic RAG experience. AWS Cloud Foundations certified.",
+    eyebrow: "/ About — the dossier",
+    parts: [
+      { text: "I build " },
+      { text: "multi-tenant platforms end to end", strong: true },
+      {
+        text: ": third-party integrations (Amazon FBA/FBM, ShipHero, DataChannel, BigQuery), warehousing and procurement modules, and CRM workflows. Strong across ",
+      },
+      { text: "Next.js and Vue", strong: true },
+      { text: " on the frontend; " },
+      { text: "Spring Boot, Node.js, FastAPI, and tRPC", strong: true },
+      { text: " on the backend, with hands-on " },
+      { text: "Agentic RAG", strong: true },
+      { text: " experience. AWS Cloud Foundations certified." },
+    ],
     highlights: [
       "Liffey Logics | Associate Software Engineer",
       "Dataropes.ai | Ecom Central (Nov 2025 to May 2026)",
@@ -121,7 +165,8 @@ export const site = {
       tags: ["Next.js 15", "TypeScript", "tRPC", "PostgreSQL", "Kysely", "BigQuery"],
       summary:
         "E-commerce operations platform with Amazon FBA/FBM marketplace integration, ShipHero warehouse sync, DataChannel to BigQuery pipelines, and a full warehousing module covering inbound, inventory, receiving, packaging, and purchase shipments.",
-      href: "#contact",
+      links: { live: null, repo: null } satisfies ProjectLinks,
+      featured: true,
     },
     {
       id: "02",
@@ -130,7 +175,8 @@ export const site = {
       tags: ["Spring Boot", "Vue 3", "PostgreSQL", "CRM"],
       summary:
         "Interior design business management platform at Liffey Logics. Built CRM for Lead to Bid to Project to Procurement to Invoice, client email templates with SMTP and response portal, plus procurement workspaces with vendor catalogues and line-item tracking.",
-      href: "#contact",
+      links: { live: null, repo: null } satisfies ProjectLinks,
+      featured: false,
     },
     {
       id: "03",
@@ -139,7 +185,8 @@ export const site = {
       tags: ["React Native", "FastAPI", "Bookings", "Payments"],
       summary:
         "Online booking platform that connects players with turf owners. Players discover, compare, and instantly book facilities; owners manage schedules, bookings, and payments. Built on React Native and FastAPI.",
-      href: "#contact",
+      links: { live: null, repo: null } satisfies ProjectLinks,
+      featured: false,
     },
     {
       id: "04",
@@ -148,7 +195,8 @@ export const site = {
       tags: ["Next.js", "tRPC", "FastAPI", "React Native", "Agentic RAG"],
       summary:
         "AI business idea evaluation and market simulation SaaS (FYP). Agentic RAG across 8 live channels, dual-LLM pipeline with RAGAS grounding, deployed as microservices on Vercel and Render with a React Native client.",
-      href: "#contact",
+      links: { live: null, repo: null } satisfies ProjectLinks,
+      featured: false,
     },
     {
       id: "05",
@@ -157,7 +205,8 @@ export const site = {
       tags: ["FastAPI", "LangChain", "RAG", "ChromaDB", "React"],
       summary:
         "RAG tool that loads any repository, chunks and embeds the code, and answers natural-language questions about the codebase via LangChain and ChromaDB.",
-      href: "https://github.com/hassan-jamshaid10",
+      links: { live: null, repo: null } satisfies ProjectLinks,
+      featured: false,
     },
   ],
   certifications: [
@@ -219,15 +268,7 @@ export const site = {
     },
     {
       group: "Data",
-      items: [
-        "PostgreSQL",
-        "BigQuery",
-        "MongoDB",
-        "MySQL",
-        "Kysely",
-        "Supabase",
-        "pgvector",
-      ],
+      items: ["PostgreSQL", "BigQuery", "MongoDB", "MySQL", "Kysely", "Supabase", "pgvector"],
     },
     {
       group: "AI / ML",
@@ -269,8 +310,22 @@ export const site = {
     "Top 10, SOFTEC '26 Web Hackathon (FAST-NUCES Lahore)",
     "8th Place, FCCU XR AI Hackathon among 50 teams",
   ],
+  achievementTiles: [
+    { kicker: "Certified", title: "AWS Cloud Foundations, Amazon Web Services" },
+    { kicker: "2nd of 35 teams", title: "Runner-Up, WebVerse Hackathon (2026)" },
+    { kicker: "Top 10", title: "SOFTEC '26 Web Hackathon (FAST-NUCES Lahore)" },
+    { kicker: "8th of 50 teams", title: "FCCU XR AI Hackathon" },
+  ],
   contact: {
     title: "Have a role, a product, or a hard problem?",
     body: "Open to remote engineering roles and selective freelance. Building SaaS, AI systems, or ops platforms? Let's talk.",
   },
+  workIntro:
+    "A tight set of systems and product surfaces: automation, platforms, and interfaces with intent.",
 } as const;
+
+export type Project = (typeof site.projects)[number];
+
+export function projectHref(project: { links: ProjectLinks }) {
+  return project.links.live || project.links.repo || null;
+}

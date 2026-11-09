@@ -4,10 +4,12 @@ import { Contact } from "@/components/Contact";
 import { Experience } from "@/components/Experience";
 import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/Hero";
+import { Marquee } from "@/components/Marquee";
 import { Nav } from "@/components/Nav";
 import { Process } from "@/components/Process";
-import { Skills } from "@/components/Skills";
 import { ProofStrip } from "@/components/ProofStrip";
+import { Shell } from "@/components/portfolio/Shell";
+import { Skills } from "@/components/Skills";
 import { Work } from "@/components/Work";
 import { site } from "@/content/site";
 
@@ -21,19 +23,20 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <>
+    <Shell>
       <Nav />
-      <main className="flex-1">
+      <main id="content">
         <Hero />
+        <Marquee />
         <ProofStrip />
-        <Work />
-        <Experience />
         <About />
+        <Work />
         <Process />
+        <Experience />
         <Skills />
         <Contact />
       </main>
       <Footer />
-    </>
+    </Shell>
   );
 }

@@ -1,81 +1,68 @@
-"use client";
-
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { site } from "@/content/site";
 
+const portraitBlur =
+  "data:image/webp;base64,UklGRlABAABXRUJQVlA4WAoAAAAQAAAADwAAFAAAQUxQSKMAAAABgCPbtirl/fbIos4ah1G45ZC655C7Zx6REncxCwZgolsE2vu9dw527y+GEBETYP43OXO02hGm54mkvUgq8VuKV8oY5WZKmlCYk/JNZUmKOmVFMkXpLa8UHoVDo08KlyHWBe4E0riXeD0UGJM+rjHkQzD7CaoAWKTuHbx3z39gSTaa3rn6GknAgyxV69bXewWQLDetQzVtqTasA8rmhpA8AJQAAFZQOCCGAAAAcAQAnQEqEAAVAD7tYqlNqaWjojAIATAdiWMArCDYoLsYkLu3sAQGJ8G+uAAA/uv7d25GzO5sZNVTBvV46dm1egzxe2frbHv7rmLWtHjDL4zkTkAxrJKD6YWoW60r3tPf4UPv1vdWT9tgwXxe8BCvg5P+TYJj1A2ooNsneOxK7nD20K3odAA=";
+
 export function About() {
-  const aws = site.certifications[0];
-
   return (
-    <section
-      id="about"
-      className="border-t border-line bg-mist px-5 py-24 md:px-8 md:py-32"
-    >
-      <div className="mx-auto grid max-w-7xl items-center gap-14 md:grid-cols-[1.15fr_0.85fr] md:gap-16 lg:gap-20">
-        <div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6 }}
-          >
-            <p className="font-[family-name:var(--font-mono)] text-xs uppercase tracking-[0.2em] text-teal">
-              About
-            </p>
-            <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-bold tracking-tight md:text-5xl">
-              {site.about.title}
-            </h2>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft/85">
-              {site.about.body}
-            </p>
-          </motion.div>
-
-          <motion.ul
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="mt-10 space-y-4"
-          >
-            {site.about.highlights.map((item) => (
-              <li
-                key={item}
-                className="border-l-2 border-signal pl-5 font-[family-name:var(--font-display)] text-xl font-semibold tracking-tight text-ink"
-              >
-                {item}
-              </li>
-            ))}
-          </motion.ul>
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-          className="justify-self-center md:justify-self-end"
-        >
-          <div className="relative w-full max-w-sm border border-line bg-paper px-8 py-10 text-center shadow-[0_20px_50px_rgba(12,18,16,0.06)]">
-            <p className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.22em] text-teal">
-              Certification
-            </p>
-            <div className="relative mx-auto mt-6 h-44 w-44 md:h-52 md:w-52">
-              <Image
-                src={aws.image}
-                alt={`${aws.title} badge`}
-                fill
-                sizes="208px"
-                className="object-contain"
-                priority
-              />
-            </div>
-            <h3 className="mt-6 font-[family-name:var(--font-display)] text-xl font-bold tracking-tight text-ink">
-              {aws.title}
-            </h3>
-            <p className="mt-2 text-sm text-muted">{aws.issuer}</p>
+    <section className="section" id="about">
+      <div className="section-inner about-grid">
+        <div className="pcol">
+          <figure className="efig">
+            <div className="halo" aria-hidden="true" />
+            <Image
+              className="about-portrait"
+              src="/media/hassan-portrait.webp"
+              alt="Portrait of Hassan Jamshaid"
+              width={864}
+              height={1152}
+              sizes="(max-width: 980px) 90vw, 480px"
+              quality={78}
+              placeholder="blur"
+              blurDataURL={portraitBlur}
+            />
+            <div className="shade" />
+            <figcaption className="cap">
+              <div>
+                <b>Hassan Jamshaid</b>
+                <div className="mono">Software Engineer | Full-Stack</div>
+              </div>
+              <div className="live">
+                <span className="dot" />
+                Available
+              </div>
+            </figcaption>
+          </figure>
+          <div className="fignote">
+            <span className="mono">Fig. 01 — Portrait</span>
+            <span className="mono">Lahore · Remote</span>
           </div>
-        </motion.div>
+        </div>
+        <div className="about-copy" data-reveal>
+          <div className="mono" data-scramble data-text={site.about.eyebrow}>
+            {site.about.eyebrow}
+          </div>
+          <h3>
+            Full-stack engineer.
+            <br />
+            Production SaaS.
+          </h3>
+          <p className="body-copy">
+            {site.about.parts.map((part, index) =>
+              "strong" in part && part.strong ? (
+                <strong key={index}>{part.text}</strong>
+              ) : (
+                <span key={index}>{part.text}</span>
+              ),
+            )}
+          </p>
+          <div className="hl">
+            {site.about.highlights.map((item) => (
+              <div key={item}>{item}</div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

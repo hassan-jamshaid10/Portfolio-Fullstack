@@ -1,65 +1,109 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { site } from "@/content/site";
+import { useRef, type PointerEvent } from "react";
+import { Magnetic } from "@/components/portfolio/Magnetic";
+import { projectHref, site, type Project } from "@/content/site";
+import { hasFinePointer, prefersReducedMotion } from "@/lib/motion";
+
+const bars = ["40%", "70%", "55%", "90%", "65%", "80%"];
+
+function Explore({ project }: { project: Project }) {
+  const href = projectHref(project);
+  if (!href) {
+    return (
+      <span className="explore is-pending" aria-hidden="true">
+        ↗
+      </span>
+    );
+  }
+  const external = href.startsWith("http");
+  return (
+    <a
+      className="explore"
+      href={href}
+      aria-label={`Open ${project.title}`}
+      {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
+    >
+      ↗
+    </a>
+  );
+}
+
+function ProjectCard({ project, index }: { project: Project; index: number }) {
+  const ref = useRef<HTMLElement>(null);
+  const href = projectHref(project);
+  const size = index === 0 ? "big" : index === 1 ? "mid" : "third";
+
+  function onMove(event: PointerEvent<HTMLElement>) {
+    const card = ref.current;
+    if (!card || event.pointerType !== "mouse" || !hasFinePointer() || prefersReducedMotion()) return;
+    const rect = card.getBoundingClientRect();
+    const px = (event.clientX - rect.left) / rect.width;
+    const py = (event.clientY - rect.top) / rect.height;
+    card.style.setProperty("--mx", `${px * 100}%`);
+    card.style.setProperty("--my", `${py * 100}%`);
+    const rx = (py - 0.5) * -7;
+    const ry = (px - 0.5) * 9;
+    card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+  }
+
+  function onLeave() {
+    const card = ref.current;
+    if (!card) return;
+    card.style.transform = "";
+  }
+
+  return (
+    <article
+      ref={ref}
+      className={`card ${size}`}
+      data-cursor={href ? "view" : undefined}
+      onPointerMove={onMove}
+      onPointerLeave={onLeave}
+    >
+      <span className="num">{project.id}</span>
+      <div className="mono">{project.company}</div>
+      <h3>{project.title}</h3>
+      <p>{project.summary}</p>
+      {index === 0 ? (
+        <div className="ui" aria-hidden="true">
+          <i style={{ width: "40%" }} />
+          <i style={{ width: "70%" }} />
+          <div className="bars">
+            {bars.map((height) => (
+              <b key={height} style={{ height }} />
+            ))}
+          </div>
+        </div>
+      ) : null}
+      <div className="chips">
+        {project.tags.map((tag) => (
+          <span key={tag}>{tag}</span>
+        ))}
+      </div>
+      <Magnetic className="explore-wrap" strength={0.35}>
+        <Explore project={project} />
+      </Magnetic>
+    </article>
+  );
+}
 
 export function Work() {
   return (
-    <section id="work" className="bg-paper px-5 py-24 md:px-8 md:py-32">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-14 flex flex-col gap-4 md:mb-20 md:flex-row md:items-end md:justify-between">
+    <section className="section tight" id="work">
+      <div className="section-inner">
+        <div className="sh">
           <div>
-            <p className="font-[family-name:var(--font-mono)] text-xs uppercase tracking-[0.2em] text-teal">
-              Selected work
-            </p>
-            <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-bold tracking-tight md:text-6xl">
-              Built to perform.
-            </h2>
+            <div className="mono" data-scramble data-text="/ Selected work">
+              / Selected work
+            </div>
+            <h2>Built to perform.</h2>
           </div>
-          <p className="max-w-md text-muted md:text-right">
-            A tight set of systems and product surfaces: automation, platforms,
-            and interfaces with intent.
-          </p>
+          <p>{site.workIntro}</p>
         </div>
-
-        <div className="divide-y divide-line border-y border-line">
+        <div className="work-grid">
           {site.projects.map((project, index) => (
-            <motion.a
-              key={project.id}
-              href={project.href}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{
-                duration: 0.55,
-                delay: index * 0.08,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="group grid gap-6 py-10 transition md:grid-cols-[100px_1.1fr_1.4fr_auto] md:items-center md:gap-10 md:py-12"
-            >
-              <span className="font-[family-name:var(--font-mono)] text-sm text-muted">
-                {project.id}
-              </span>
-              <div>
-                <p className="font-[family-name:var(--font-mono)] text-xs uppercase tracking-[0.14em] text-teal">
-                  {project.company}
-                </p>
-                <h3 className="mt-1 font-[family-name:var(--font-display)] text-2xl font-bold tracking-tight transition group-hover:text-teal md:text-3xl">
-                  {project.title}
-                </h3>
-                <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted">
-                  {project.tags.map((tag) => (
-                    <span key={tag}>{tag}</span>
-                  ))}
-                </div>
-              </div>
-              <p className="max-w-xl text-base leading-relaxed text-ink-soft/80">
-                {project.summary}
-              </p>
-              <span className="font-[family-name:var(--font-mono)] text-xs uppercase tracking-[0.16em] text-teal transition group-hover:translate-x-1">
-                Explore →
-              </span>
-            </motion.a>
+            <ProjectCard key={project.id} project={project} index={index} />
           ))}
         </div>
       </div>
