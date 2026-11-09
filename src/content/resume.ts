@@ -1,3 +1,5 @@
+import { CANONICAL_SITE_URL } from "@/lib/site-url";
+
 /**
  * Master resume facts for variant generation. Do not invent beyond this.
  */
@@ -8,7 +10,7 @@ export const masterResume = {
   phone: "+92-312-4384133",
   location: "Lahore, Pakistan",
   links: {
-    website: "https://portfolio-fullstack-hassan-jamshaid10s-projects.vercel.app",
+    website: CANONICAL_SITE_URL,
     linkedin: "https://www.linkedin.com/in/hassanjamshaid10",
     github: "https://github.com/hassan-jamshaid10",
   },

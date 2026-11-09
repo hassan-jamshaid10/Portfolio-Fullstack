@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
-import { fallbackSiteUrl } from "@/lib/site-url";
+import { CANONICAL_SITE_URL, isNonPublicSiteUrl } from "@/lib/site-url";
 
 export const RESUME_PDF_FILENAME = "Hassan_Jamshaid_Resume.pdf";
 
@@ -13,12 +13,13 @@ export function getResumePdfUrl() {
   if (explicit) return explicit;
 
   const site = (
-    process.env.NEXT_PUBLIC_SITE_URL?.trim() || fallbackSiteUrl
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() || CANONICAL_SITE_URL
   ).replace(/\/$/, "");
 
-  // Composio fetches the attachment server-side; never use localhost or the expired domain.
-  if (/localhost|127\.0\.0\.1|hassanjamshaid\.tech/i.test(site)) {
-    return `${fallbackSiteUrl}/${RESUME_PDF_FILENAME}`;
+  // Composio fetches the attachment server-side. Skip localhost, the expired
+  // domain, and the old portfolio-fullstack deployment host.
+  if (isNonPublicSiteUrl(site)) {
+    return `${CANONICAL_SITE_URL}/${RESUME_PDF_FILENAME}`;
   }
 
   return `${site}/${RESUME_PDF_FILENAME}`;
