@@ -1,30 +1,36 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import localFont from "next/font/local";
 import Script from "next/script";
 import { JsonLd } from "@/components/JsonLd";
 import { ThemeProvider } from "@/components/portfolio/ThemeProvider";
 import { site } from "@/content/site";
 import "./globals.css";
 
-const display = Space_Grotesk({
+const display = localFont({
+  src: "../fonts/space-grotesk-latin.woff2",
   variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: "300 700",
   display: "swap",
+  adjustFontFallback: "Arial",
+  fallback: ["Arial", "sans-serif"],
 });
 
-const body = Inter({
+const body = localFont({
+  src: "../fonts/inter-latin.woff2",
   variable: "--font-body",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: "100 900",
   display: "swap",
+  adjustFontFallback: "Arial",
+  fallback: ["Arial", "sans-serif"],
 });
 
-const mono = JetBrains_Mono({
+const mono = localFont({
+  src: "../fonts/jetbrains-mono-latin.woff2",
   variable: "--font-mono",
-  subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: "100 800",
   display: "swap",
+  adjustFontFallback: "Arial",
+  fallback: ["ui-monospace", "monospace"],
 });
 
 const baseUrl = site.website.replace(/\/$/, "");
