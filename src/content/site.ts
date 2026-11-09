@@ -152,72 +152,113 @@ export const site = {
   projects: [
     {
       id: "01",
-      title: "PukaarAI",
-      role: "Technical Lead & Engineer",
-      dates: "Aug 2026 – Present",
-      cover: "/work/pukaar.webp",
-      tags: ["Next.js", "FastAPI", "PostgreSQL"],
+      title: "Ecom Central",
+      company: "Dataropes.ai",
+      tags: ["Next.js 15", "TypeScript", "tRPC", "PostgreSQL", "Kysely", "BigQuery"],
       summary:
-        "Confidential workplace incident reporting in Urdu and English, with voice and text, transcription, AI-assisted risk assessment, and an admin review workflow.",
-      link: {
-        href: "https://upliftx-replit-hackathon-web.vercel.app/login",
-        label: "Live",
-      },
+        "E-commerce operations platform with Amazon FBA/FBM marketplace integration, ShipHero warehouse sync, DataChannel to BigQuery pipelines, and a full warehousing module covering inbound, inventory, receiving, packaging, and purchase shipments.",
+      links: { live: null, repo: null },
+      linkLabel: null,
     },
     {
       id: "02",
-      title: "Sporttek",
-      role: "Co-founder & Lead Engineer",
-      dates: "Jul 2026 – Present",
-      cover: "/work/sporttek.webp",
-      tags: ["Next.js", "TypeScript", "Flutter", "Spring Boot", "PostgreSQL"],
+      title: "Jessica Nelson",
+      company: "Liffey Logics",
+      tags: ["Spring Boot", "Vue 3", "PostgreSQL", "CRM"],
       summary:
-        "Sports venue discovery and booking for padel, futsal, football, badminton, and cricket, with a player experience and a venue-management panel.",
-      link: { href: "https://www.sporttek.pk/play", label: "Live" },
+        "Interior design business management platform at Liffey Logics. Built CRM for Lead to Bid to Project to Procurement to Invoice, client email templates with SMTP and response portal, plus procurement workspaces with vendor catalogues and line-item tracking.",
+      links: { live: null, repo: null },
+      linkLabel: null,
     },
     {
       id: "03",
-      title: "LaunchPulse AI",
-      role: "Creator & Lead Engineer",
-      dates: "Oct 2025 – May 2026",
-      cover: "/work/launchpulse.webp",
-      tags: ["Next.js", "TypeScript", "tRPC", "PostgreSQL", "Supabase"],
+      title: "Sporttek",
+      company: "Personal",
+      tags: ["React Native", "FastAPI", "Bookings", "Payments"],
       summary:
-        "Startup-idea evaluation with agentic RAG, scoring, market research, and a workspace for competitors, roadmaps, and reports.",
-      link: { href: "https://nextjs-launchpulse.vercel.app/auth/login", label: "Live" },
+        "Online booking platform that connects players with turf owners. Players discover, compare, and instantly book facilities; owners manage schedules, bookings, and payments. Built on React Native and FastAPI.",
+      links: { live: null, repo: null },
+      linkLabel: null,
     },
     {
       id: "04",
-      title: "OctaBit Logics",
-      role: "Co-founder, CTO & Lead Engineer",
-      dates: "Feb 2026 – Present",
-      cover: "/work/octabit.webp",
-      tags: ["Next.js", "TypeScript"],
+      title: "Launch Pulse",
+      company: "FYP",
+      tags: ["Next.js", "tRPC", "FastAPI", "React Native", "Agentic RAG"],
       summary:
-        "The studio site for services, products, and selected work, so clients can see how OctaBit Logics approaches software.",
-      link: { href: "https://octabitlogics.com", label: "Live" },
+        "AI business idea evaluation and market simulation SaaS (FYP). Agentic RAG across 8 live channels, dual-LLM pipeline with RAGAS grounding, deployed as microservices on Vercel and Render with a React Native client.",
+      links: { live: null, repo: null },
+      linkLabel: null,
     },
     {
       id: "05",
-      title: "Sunao Technologies",
-      role: "Co-founder, CTO & Lead Engineer",
-      dates: "2026 – Present",
-      cover: "/work/sunao.webp",
-      tags: ["Vue 3", "TypeScript", "Vite"],
+      title: "Codebase AI",
+      company: "Personal",
+      tags: ["FastAPI", "LangChain", "RAG", "ChromaDB", "React"],
       summary:
-        "Company site for an AI-focused studio, including SunaoBot, a Gemini-powered assistant, and an email contact flow.",
-      link: { href: "https://sunaotechnologies.com/", label: "Live" },
+        "RAG tool that loads any repository, chunks and embeds the code, and answers natural-language questions about the codebase via LangChain and ChromaDB.",
+      links: { live: null, repo: null },
+      linkLabel: null,
     },
     {
       id: "06",
+      title: "PukaarAI",
+      company: "Technical Lead & Engineer · Aug 2026 – Present",
+      tags: ["Next.js", "FastAPI", "PostgreSQL"],
+      summary:
+        "Confidential workplace incident reporting in Urdu and English, with voice and text, transcription, AI-assisted risk assessment, and an admin review workflow.",
+      links: { live: "https://upliftx-replit-hackathon-web.vercel.app/login", repo: null },
+      linkLabel: "Live",
+    },
+    {
+      id: "07",
+      title: "Sporttek",
+      company: "Co-founder & Lead Engineer · Jul 2026 – Present",
+      tags: ["Next.js", "TypeScript", "Flutter", "Spring Boot", "PostgreSQL"],
+      summary:
+        "Sports venue discovery and booking for padel, futsal, football, badminton, and cricket, with a player experience and a venue-management panel.",
+      links: { live: "https://www.sporttek.pk/play", repo: null },
+      linkLabel: "Live",
+    },
+    {
+      id: "08",
+      title: "LaunchPulse AI",
+      company: "Creator & Lead Engineer · Oct 2025 – May 2026",
+      tags: ["Next.js", "TypeScript", "tRPC", "PostgreSQL", "Supabase"],
+      summary:
+        "Startup-idea evaluation with agentic RAG, scoring, market research, and a workspace for competitors, roadmaps, and reports.",
+      links: { live: "https://nextjs-launchpulse.vercel.app/auth/login", repo: null },
+      linkLabel: "Live",
+    },
+    {
+      id: "09",
+      title: "OctaBit Logics",
+      company: "Co-founder, CTO & Lead Engineer · Feb 2026 – Present",
+      tags: ["Next.js", "TypeScript"],
+      summary:
+        "The studio site for services, products, and selected work, so clients can see how OctaBit Logics approaches software.",
+      links: { live: "https://octabitlogics.com", repo: null },
+      linkLabel: "Live",
+    },
+    {
+      id: "10",
+      title: "Sunao Technologies",
+      company: "Co-founder, CTO & Lead Engineer · 2026 – Present",
+      tags: ["Vue 3", "TypeScript", "Vite"],
+      summary:
+        "Company site for an AI-focused studio, including SunaoBot, a Gemini-powered assistant, and an email contact flow.",
+      links: { live: "https://sunaotechnologies.com/", repo: null },
+      linkLabel: "Live",
+    },
+    {
+      id: "11",
       title: "CodebaseAI",
-      role: "Personal project",
-      dates: "2024 – Present",
-      cover: "/work/codebaseai.webp",
+      company: "Personal project · 2024 – Present",
       tags: ["React", "Vite", "Tailwind CSS", "FastAPI", "LangChain", "ChromaDB"],
       summary:
         "Ask a repository questions in plain language. It loads the code, retrieves the relevant parts, and explains functions and architecture.",
-      link: { href: "https://github.com/hassan-jamshaid10/CodebaseAI", label: "Code" },
+      links: { live: null, repo: "https://github.com/hassan-jamshaid10/CodebaseAI" },
+      linkLabel: "Code",
     },
   ],
   certifications: [
@@ -332,11 +373,11 @@ export const site = {
     body: "Open to remote engineering roles and selective freelance. Building SaaS, AI systems, or ops platforms? Let's talk.",
   },
   workIntro:
-    "Products and sites I've designed and built, often with the people I work with.",
+    "A tight set of systems and product surfaces: automation, platforms, and interfaces with intent.",
 } as const;
 
 export type Project = (typeof site.projects)[number];
 
-export function projectHref(project: { link: { href: string; label: string } | null }) {
-  return project.link?.href ?? null;
+export function projectHref(project: { links: { live: string | null; repo: string | null } }) {
+  return project.links.live || project.links.repo || null;
 }
