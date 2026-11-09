@@ -177,8 +177,8 @@ export const site = {
       tags: ["React Native", "FastAPI", "Bookings", "Payments"],
       summary:
         "Online booking platform that connects players with turf owners. Players discover, compare, and instantly book facilities; owners manage schedules, bookings, and payments. Built on React Native and FastAPI.",
-      links: { live: null, repo: null },
-      linkLabel: null,
+      links: { live: "https://www.sporttek.pk/play", repo: null },
+      linkLabel: "Live",
     },
     {
       id: "04",
@@ -187,8 +187,8 @@ export const site = {
       tags: ["Next.js", "tRPC", "FastAPI", "React Native", "Agentic RAG"],
       summary:
         "AI business idea evaluation and market simulation SaaS (FYP). Agentic RAG across 8 live channels, dual-LLM pipeline with RAGAS grounding, deployed as microservices on Vercel and Render with a React Native client.",
-      links: { live: null, repo: null },
-      linkLabel: null,
+      links: { live: "https://nextjs-launchpulse.vercel.app/auth/login", repo: null },
+      linkLabel: "Live",
     },
     {
       id: "05",
@@ -197,8 +197,8 @@ export const site = {
       tags: ["FastAPI", "LangChain", "RAG", "ChromaDB", "React"],
       summary:
         "RAG tool that loads any repository, chunks and embeds the code, and answers natural-language questions about the codebase via LangChain and ChromaDB.",
-      links: { live: null, repo: null },
-      linkLabel: null,
+      links: { live: null, repo: "https://github.com/hassan-jamshaid10/CodebaseAI" },
+      linkLabel: "Code",
     },
     {
       id: "06",
@@ -212,26 +212,6 @@ export const site = {
     },
     {
       id: "07",
-      title: "Sporttek",
-      company: "Co-founder & Lead Engineer · Jul 2026 – Present",
-      tags: ["Next.js", "TypeScript", "Flutter", "Spring Boot", "PostgreSQL"],
-      summary:
-        "Sports venue discovery and booking for padel, futsal, football, badminton, and cricket, with a player experience and a venue-management panel.",
-      links: { live: "https://www.sporttek.pk/play", repo: null },
-      linkLabel: "Live",
-    },
-    {
-      id: "08",
-      title: "LaunchPulse AI",
-      company: "Creator & Lead Engineer · Oct 2025 – May 2026",
-      tags: ["Next.js", "TypeScript", "tRPC", "PostgreSQL", "Supabase"],
-      summary:
-        "Startup-idea evaluation with agentic RAG, scoring, market research, and a workspace for competitors, roadmaps, and reports.",
-      links: { live: "https://nextjs-launchpulse.vercel.app/auth/login", repo: null },
-      linkLabel: "Live",
-    },
-    {
-      id: "09",
       title: "OctaBit Logics",
       company: "Co-founder, CTO & Lead Engineer · Feb 2026 – Present",
       tags: ["Next.js", "TypeScript"],
@@ -241,7 +221,7 @@ export const site = {
       linkLabel: "Live",
     },
     {
-      id: "10",
+      id: "08",
       title: "Sunao Technologies",
       company: "Co-founder, CTO & Lead Engineer · 2026 – Present",
       tags: ["Vue 3", "TypeScript", "Vite"],
@@ -249,16 +229,6 @@ export const site = {
         "Company site for an AI-focused studio, including SunaoBot, a Gemini-powered assistant, and an email contact flow.",
       links: { live: "https://sunaotechnologies.com/", repo: null },
       linkLabel: "Live",
-    },
-    {
-      id: "11",
-      title: "CodebaseAI",
-      company: "Personal project · 2024 – Present",
-      tags: ["React", "Vite", "Tailwind CSS", "FastAPI", "LangChain", "ChromaDB"],
-      summary:
-        "Ask a repository questions in plain language. It loads the code, retrieves the relevant parts, and explains functions and architecture.",
-      links: { live: null, repo: "https://github.com/hassan-jamshaid10/CodebaseAI" },
-      linkLabel: "Code",
     },
   ],
   certifications: [
