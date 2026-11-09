@@ -192,16 +192,6 @@ export const site = {
     },
     {
       id: "05",
-      title: "Codebase AI",
-      company: "Personal",
-      tags: ["FastAPI", "LangChain", "RAG", "ChromaDB", "React"],
-      summary:
-        "RAG tool that loads any repository, chunks and embeds the code, and answers natural-language questions about the codebase via LangChain and ChromaDB.",
-      links: { live: null, repo: null },
-      linkLabel: null,
-    },
-    {
-      id: "06",
       title: "PukaarAI",
       company: "Technical Lead & Engineer · Aug 2026 – Present",
       tags: ["Next.js", "FastAPI", "PostgreSQL"],
@@ -211,7 +201,7 @@ export const site = {
       linkLabel: "Live",
     },
     {
-      id: "07",
+      id: "06",
       title: "Sporttek",
       company: "Co-founder & Lead Engineer · Jul 2026 – Present",
       tags: ["Next.js", "TypeScript", "Flutter", "Spring Boot", "PostgreSQL"],
@@ -221,7 +211,7 @@ export const site = {
       linkLabel: "Live",
     },
     {
-      id: "08",
+      id: "07",
       title: "LaunchPulse AI",
       company: "Creator & Lead Engineer · Oct 2025 – May 2026",
       tags: ["Next.js", "TypeScript", "tRPC", "PostgreSQL", "Supabase"],
@@ -231,7 +221,7 @@ export const site = {
       linkLabel: "Live",
     },
     {
-      id: "09",
+      id: "08",
       title: "OctaBit Logics",
       company: "Co-founder, CTO & Lead Engineer · Feb 2026 – Present",
       tags: ["Next.js", "TypeScript"],
@@ -241,7 +231,7 @@ export const site = {
       linkLabel: "Live",
     },
     {
-      id: "10",
+      id: "9",
       title: "Sunao Technologies",
       company: "Co-founder, CTO & Lead Engineer · 2026 – Present",
       tags: ["Vue 3", "TypeScript", "Vite"],
@@ -250,15 +240,15 @@ export const site = {
       links: { live: "https://sunaotechnologies.com/", repo: null },
       linkLabel: "Live",
     },
-    {
-      id: "11",
-      title: "CodebaseAI",
-      company: "Personal project · 2024 – Present",
-      tags: ["React", "Vite", "Tailwind CSS", "FastAPI", "LangChain", "ChromaDB"],
+      {
+      id: "10",
+      title: "Codebase AI",
+      company: "Personal",
+      tags: ["FastAPI", "LangChain", "RAG", "ChromaDB", "React"],
       summary:
-        "Ask a repository questions in plain language. It loads the code, retrieves the relevant parts, and explains functions and architecture.",
-      links: { live: null, repo: "https://github.com/hassan-jamshaid10/CodebaseAI" },
-      linkLabel: "Code",
+        "RAG tool that loads any repository, chunks and embeds the code, and answers natural-language questions about the codebase via LangChain and ChromaDB.",
+      links: { live: null, repo: null },
+      linkLabel: null,
     },
   ],
   certifications: [
