@@ -182,16 +182,6 @@ export const site = {
     },
     {
       id: "04",
-      title: "Launch Pulse",
-      company: "FYP",
-      tags: ["Next.js", "tRPC", "FastAPI", "React Native", "Agentic RAG"],
-      summary:
-        "AI business idea evaluation and market simulation SaaS (FYP). Agentic RAG across 8 live channels, dual-LLM pipeline with RAGAS grounding, deployed as microservices on Vercel and Render with a React Native client.",
-      links: { live: null, repo: null },
-      linkLabel: null,
-    },
-    {
-      id: "05",
       title: "PukaarAI",
       company: "Technical Lead & Engineer · Aug 2026 – Present",
       tags: ["Next.js", "FastAPI", "PostgreSQL"],
@@ -201,7 +191,7 @@ export const site = {
       linkLabel: "Live",
     },
     {
-      id: "06",
+      id: "05",
       title: "LaunchPulse AI",
       company: "Creator & Lead Engineer · Oct 2025 – May 2026",
       tags: ["Next.js", "TypeScript", "tRPC", "PostgreSQL", "Supabase"],
@@ -211,7 +201,7 @@ export const site = {
       linkLabel: "Live",
     },
     {
-      id: "07",
+      id: "06",
       title: "OctaBit Logics",
       company: "Co-founder, CTO & Lead Engineer · Feb 2026 – Present",
       tags: ["Next.js", "TypeScript"],
@@ -221,7 +211,7 @@ export const site = {
       linkLabel: "Live",
     },
     {
-      id: "08",
+      id: "07",
       title: "Sunao Technologies",
       company: "Co-founder, CTO & Lead Engineer · 2026 – Present",
       tags: ["Vue 3", "TypeScript", "Vite"],
@@ -231,7 +221,7 @@ export const site = {
       linkLabel: "Live",
     },
       {
-      id: "09",
+      id: "08",
       title: "Codebase AI",
       company: "Personal",
       tags: ["FastAPI", "LangChain", "RAG", "ChromaDB", "React"],
