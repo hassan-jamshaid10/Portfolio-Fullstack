@@ -717,25 +717,8 @@ html[data-theme="light"] .v2 .ptag {
 }
 
 .v2 .marquee-group b {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
   color: var(--fg);
   font-weight: 500;
-}
-
-.v2 .marquee-group b svg {
-  width: 1em;
-  height: 1em;
-  flex: none;
-}
-
-.v2 .marquee-group b.is-ink svg {
-  color: #141414;
-}
-
-html[data-theme="dark"] .v2 .marquee-group b.is-ink svg {
-  color: var(--fg);
 }
 
 .v2 .marquee-group em {
