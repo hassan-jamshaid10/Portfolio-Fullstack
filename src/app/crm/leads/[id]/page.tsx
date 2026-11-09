@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { trpc } from "@/trpc/client";
 
 export default function CrmLeadDetailPage() {
@@ -14,13 +14,14 @@ export default function CrmLeadDetailPage() {
     { enabled: Boolean(me.data?.authenticated && id) },
   );
   const utils = trpc.useUtils();
+  const contactEmail = detail.data?.lead.contact_email ?? "";
   const [toEmail, setToEmail] = useState("");
+  const [seededEmail, setSeededEmail] = useState("");
 
-  useEffect(() => {
-    if (detail.data?.lead.contact_email) {
-      setToEmail(detail.data.lead.contact_email);
-    }
-  }, [detail.data?.lead.contact_email]);
+  if (contactEmail && contactEmail !== seededEmail) {
+    setSeededEmail(contactEmail);
+    setToEmail(contactEmail);
+  }
 
   const approve = trpc.leads.approveAndSend.useMutation({
     onSuccess: async (data) => {
