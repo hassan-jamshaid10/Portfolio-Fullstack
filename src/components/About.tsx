@@ -44,19 +44,15 @@ export function About() {
             {site.about.eyebrow}
           </div>
           <h3>
-            Full-stack engineer.
+            Software engineer.
             <br />
-            Production SaaS.
+            Products people use.
           </h3>
-          <p className="body-copy">
-            {site.about.parts.map((part, index) =>
-              "strong" in part && part.strong ? (
-                <strong key={index}>{part.text}</strong>
-              ) : (
-                <span key={index}>{part.text}</span>
-              ),
-            )}
-          </p>
+          {site.about.paragraphs.map((paragraph) => (
+            <p className="body-copy" key={paragraph}>
+              {paragraph}
+            </p>
+          ))}
           <div className="hl">
             {site.about.highlights.map((item) => (
               <div key={item}>{item}</div>

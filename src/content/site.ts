@@ -1,15 +1,9 @@
 import { siteUrl } from "@/lib/site-url";
 
 /**
- * Portfolio content from the live site (content.json) plus the phone number
- * Hassan supplied for this redesign. Do not invent facts.
- *
- * Project `links.live` / `links.repo` stay null until a real public URL exists.
+ * Portfolio content. Project and experience copy follows Hassan's LinkedIn
+ * capture (Nov 2026), with LaunchPulse dates set to Oct 2025 – May 2026.
  */
-export type ProjectLinks = {
-  live: string | null;
-  repo: string | null;
-};
 
 export const site = {
   name: "Hassan Jamshaid",
@@ -17,8 +11,8 @@ export const site = {
   firstName: "Hassan",
   lastName: "Jamshaid",
   role: "Software Engineer | Full-Stack",
-  location: "Lahore, Pakistan | Remote",
-  availability: "Open to remote roles · Lahore, PK",
+  location: "Lahore, Pakistan",
+  availability: "Lahore, PK",
   email: "hjamshaid81@gmail.com",
   phone: "+92 312 4384133",
   phoneHref: "tel:+923124384133",
@@ -29,14 +23,14 @@ export const site = {
     github: "https://github.com/hassan-jamshaid10",
   },
   hero: {
-    headline: "I ship multi-tenant SaaS that scales.",
+    headline: "I build products people actually use.",
     support:
-      "Full-stack engineer for e-commerce ops, CRM, and AI platforms. Next.js, Spring Boot, FastAPI, and typed APIs in production.",
+      "Software engineer for AI-first systems and full-stack apps, from agentic RAG to the web platforms and integrations behind them.",
   },
   seo: {
-    title: "Hassan Jamshaid | Software Engineer & Full-Stack Developer",
+    title: "Hassan Jamshaid | Software Engineer",
     description:
-      "Hassan Jamshaid is a Software Engineer and full-stack developer in Lahore, Pakistan. Building multi-tenant SaaS, e-commerce ops, CRM platforms, and AI systems with Next.js, Spring Boot, FastAPI, and tRPC.",
+      "Hassan Jamshaid is a software engineer in Lahore building products people use: full-stack web apps, AI-first systems, and integrations with Next.js, Spring Boot, Vue 3, and FastAPI.",
     keywords: [
       "Hassan Jamshaid",
       "Hassan Jamshaid Software Engineer",
@@ -67,32 +61,23 @@ export const site = {
     "AWS",
   ],
   quickFacts: [
-    { label: "Now", value: "Liffey Logics", detail: "Associate Software Engineer" },
-    { label: "Focus", value: "SaaS & AI systems", detail: "Multi-tenant platforms that ship" },
+    { label: "Now", value: "OctaBit Logics", detail: "Co-Founder & CTO" },
+    { label: "Focus", value: "Products people use", detail: "AI-first systems and full-stack apps" },
     { label: "Certified", value: "AWS Cloud Foundations", detail: "Amazon Web Services Academy" },
     { label: "Base", value: "Lahore | Remote", detail: "Open to global teams" },
   ],
   about: {
-    title: "Full-stack engineer. Production SaaS.",
+    title: "Software engineer. Products people use.",
     eyebrow: "/ About — the dossier",
-    parts: [
-      { text: "I build " },
-      { text: "multi-tenant platforms end to end", strong: true },
-      {
-        text: ": third-party integrations (Amazon FBA/FBM, ShipHero, DataChannel, BigQuery), warehousing and procurement modules, and CRM workflows. Strong across ",
-      },
-      { text: "Next.js and Vue", strong: true },
-      { text: " on the frontend; " },
-      { text: "Spring Boot, Node.js, FastAPI, and tRPC", strong: true },
-      { text: " on the backend, with hands-on " },
-      { text: "Agentic RAG", strong: true },
-      { text: " experience. AWS Cloud Foundations certified." },
+    paragraphs: [
+      "I'm a software engineer who likes building products people actually use. Most of my work is full-stack: web apps, REST APIs, and microservices with Spring Boot, Next.js, Vue 3, and FastAPI, plus the enterprise workflows and third-party integrations that sit around them.",
+      "I also build AI-first systems: agentic RAG, LLM apps, vector retrieval, and evaluation you can check. I'm AWS Cloud Foundations certified, and I co-founded OctaBit Logics, Sunao Technologies, and Sporttek.",
     ],
     highlights: [
-      "Liffey Logics | Associate Software Engineer",
-      "Dataropes.ai | Ecom Central (Nov 2025 to May 2026)",
-      "Next.js | tRPC | Spring Boot | FastAPI",
-      "Agentic RAG | LangChain | LlamaIndex",
+      "OctaBit Logics | Co-Founder & CTO",
+      "Liffey Logics | Junior Software Engineer",
+      "Next.js | Spring Boot | Vue 3 | FastAPI",
+      "Agentic RAG | LangChain | Vector retrieval",
     ],
   },
   process: [
@@ -119,94 +104,120 @@ export const site = {
   ],
   experience: [
     {
-      role: "Associate Software Engineer",
-      company: "Liffey Logics",
-      period: "Jun 2026 to Present",
-      location: "Lahore, Pakistan",
+      role: "Co-Founder & CTO",
+      company: "OctaBit Logics",
+      period: "Feb 2026 – Present",
+      location: "",
+      href: "https://octabitlogics.com",
       summary:
-        "Building the Jessica Nelson interior design business management platform: CRM, procurement, and client workflows.",
-      bullets: [
-        "Lead development on Jessica Nelson: CRM covering lead management, bids and bid history, and client communications for the Lead to Bid to Project to Procurement to Invoice workflow.",
-        "Built a client email-template system integrated with SMTP settings and the client response portal.",
-        "Developing the procurement module: workspaces that snapshot project rooms and allowance line items into procurement sheets, with vendor/catalogue management and line-item status tracking.",
-      ],
+        "I lead the technical direction of OctaBit Logics, a software engineering studio, and the engineering and delivery of our client and product work.",
+    },
+    {
+      role: "Junior Software Engineer",
+      company: "Liffey Logics",
+      period: "Jun 2026 – Present",
+      location: "Remote",
+      href: null,
+      summary:
+        "Building enterprise applications with Spring Boot, Vue 3, and PostgreSQL, including business workflows and third-party integrations.",
     },
     {
       role: "Junior Software Developer",
-      company: "Dataropes.ai",
-      period: "Nov 2025 to May 2026",
-      location: "Lahore, Pakistan",
+      company: "Data Ropes.ai",
+      period: "Nov 2025 – May 2026",
+      location: "Hybrid, Lahore",
+      href: null,
       summary:
-        "Multi-tenant SaaS for e-commerce operations. Owned Ecom Central warehousing, marketplace, and analytics integrations.",
-      bullets: [
-        "Built Ecom Central end to end: inbound shipments, inventory movements, receiving, packaging, shipping labels, and purchase-shipment workflows.",
-        "Integrated Amazon FBA/FBM, ShipHero, DataChannel, and BigQuery for cross-entity inventory and sales analytics.",
-        "Shipped production Next.js/tRPC surfaces with PostgreSQL, Kysely, and multi-tenant data flows.",
-      ],
+        "Built SaaS applications with Next.js, TypeScript, and tRPC, across data integrations, warehousing, inventory, and e-commerce workflows.",
     },
     {
-      role: "Full-Stack Intern",
-      company: "NetSol Technologies",
-      period: "Jul 2024 to Sep 2024",
-      location: "Lahore, Pakistan",
+      role: "Webmaster",
+      company: "IEEE Computer Society UCP Student Chapter",
+      period: "Dec 2024 – Mar 2026",
+      location: "",
+      href: null,
       summary:
-        "Enterprise product engineering within sprint cycles and code-review workflows.",
-      bullets: [
-        "Built frontend and backend features with React and Spring Boot.",
-        "Integrated REST APIs across application layers in an enterprise codebase.",
-      ],
+        "Designed and built the chapter website for mission, team, events, publications, and registrations.",
+    },
+    {
+      role: "Full Stack Intern",
+      company: "NETSOL Technologies",
+      period: "Jul 2024 – Sep 2024",
+      location: "On-site, Lahore",
+      href: null,
+      summary:
+        "Contributed across Spring Boot services, Kafka, PostgreSQL, and React interfaces on a full-stack internship.",
     },
   ],
   projects: [
     {
       id: "01",
-      title: "Ecom Central",
-      company: "Dataropes.ai",
-      tags: ["Next.js 15", "TypeScript", "tRPC", "PostgreSQL", "Kysely", "BigQuery"],
+      title: "PukaarAI",
+      role: "Technical Lead & Engineer",
+      dates: "Aug 2026 – Present",
+      cover: "/work/pukaar.webp",
+      tags: ["Next.js", "FastAPI", "PostgreSQL"],
       summary:
-        "E-commerce operations platform with Amazon FBA/FBM marketplace integration, ShipHero warehouse sync, DataChannel to BigQuery pipelines, and a full warehousing module covering inbound, inventory, receiving, packaging, and purchase shipments.",
-      links: { live: null, repo: null } satisfies ProjectLinks,
-      featured: true,
+        "Confidential workplace incident reporting in Urdu and English, with voice and text, transcription, AI-assisted risk assessment, and an admin review workflow.",
+      link: {
+        href: "https://upliftx-replit-hackathon-web.vercel.app/login",
+        label: "Live",
+      },
     },
     {
       id: "02",
-      title: "Jessica Nelson",
-      company: "Liffey Logics",
-      tags: ["Spring Boot", "Vue 3", "PostgreSQL", "CRM"],
+      title: "Sporttek",
+      role: "Co-founder & Lead Engineer",
+      dates: "Jul 2026 – Present",
+      cover: "/work/sporttek.webp",
+      tags: ["Next.js", "TypeScript", "Flutter", "Spring Boot", "PostgreSQL"],
       summary:
-        "Interior design business management platform at Liffey Logics. Built CRM for Lead to Bid to Project to Procurement to Invoice, client email templates with SMTP and response portal, plus procurement workspaces with vendor catalogues and line-item tracking.",
-      links: { live: null, repo: null } satisfies ProjectLinks,
-      featured: false,
+        "Sports venue discovery and booking for padel, futsal, football, badminton, and cricket, with a player experience and a venue-management panel.",
+      link: { href: "https://www.sporttek.pk/play", label: "Live" },
     },
     {
       id: "03",
-      title: "Sporttek",
-      company: "Personal",
-      tags: ["React Native", "FastAPI", "Bookings", "Payments"],
+      title: "LaunchPulse AI",
+      role: "Creator & Lead Engineer",
+      dates: "Oct 2025 – May 2026",
+      cover: "/work/launchpulse.webp",
+      tags: ["Next.js", "TypeScript", "tRPC", "PostgreSQL", "Supabase"],
       summary:
-        "Online booking platform that connects players with turf owners. Players discover, compare, and instantly book facilities; owners manage schedules, bookings, and payments. Built on React Native and FastAPI.",
-      links: { live: null, repo: null } satisfies ProjectLinks,
-      featured: false,
+        "Startup-idea evaluation with agentic RAG, scoring, market research, and a workspace for competitors, roadmaps, and reports.",
+      link: { href: "https://nextjs-launchpulse.vercel.app/auth/login", label: "Live" },
     },
     {
       id: "04",
-      title: "Launch Pulse",
-      company: "FYP",
-      tags: ["Next.js", "tRPC", "FastAPI", "React Native", "Agentic RAG"],
+      title: "OctaBit Logics",
+      role: "Co-founder, CTO & Lead Engineer",
+      dates: "Feb 2026 – Present",
+      cover: "/work/octabit.webp",
+      tags: ["Next.js", "TypeScript"],
       summary:
-        "AI business idea evaluation and market simulation SaaS (FYP). Agentic RAG across 8 live channels, dual-LLM pipeline with RAGAS grounding, deployed as microservices on Vercel and Render with a React Native client.",
-      links: { live: null, repo: null } satisfies ProjectLinks,
-      featured: false,
+        "The studio site for services, products, and selected work, so clients can see how OctaBit Logics approaches software.",
+      link: { href: "https://octabitlogics.com", label: "Live" },
     },
     {
       id: "05",
-      title: "Codebase AI",
-      company: "Personal",
-      tags: ["FastAPI", "LangChain", "RAG", "ChromaDB", "React"],
+      title: "Sunao Technologies",
+      role: "Co-founder, CTO & Lead Engineer",
+      dates: "2026 – Present",
+      cover: "/work/sunao.webp",
+      tags: ["Vue 3", "TypeScript", "Vite"],
       summary:
-        "RAG tool that loads any repository, chunks and embeds the code, and answers natural-language questions about the codebase via LangChain and ChromaDB.",
-      links: { live: null, repo: null } satisfies ProjectLinks,
-      featured: false,
+        "Company site for an AI-focused studio, including SunaoBot, a Gemini-powered assistant, and an email contact flow.",
+      link: { href: "https://sunaotechnologies.com/", label: "Live" },
+    },
+    {
+      id: "06",
+      title: "CodebaseAI",
+      role: "Personal project",
+      dates: "2024 – Present",
+      cover: "/work/codebaseai.webp",
+      tags: ["React", "Vite", "Tailwind CSS", "FastAPI", "LangChain", "ChromaDB"],
+      summary:
+        "Ask a repository questions in plain language. It loads the code, retrieves the relevant parts, and explains functions and architecture.",
+      link: { href: "https://github.com/hassan-jamshaid10/CodebaseAI", label: "Code" },
     },
   ],
   certifications: [
@@ -321,11 +332,11 @@ export const site = {
     body: "Open to remote engineering roles and selective freelance. Building SaaS, AI systems, or ops platforms? Let's talk.",
   },
   workIntro:
-    "A tight set of systems and product surfaces: automation, platforms, and interfaces with intent.",
+    "Products and sites I've designed and built, often with the people I work with.",
 } as const;
 
 export type Project = (typeof site.projects)[number];
 
-export function projectHref(project: { links: ProjectLinks }) {
-  return project.links.live || project.links.repo || null;
+export function projectHref(project: { link: { href: string; label: string } | null }) {
+  return project.link?.href ?? null;
 }

@@ -10,9 +10,6 @@ import { site } from "@/content/site";
 const figureBlur =
   "data:image/webp;base64,UklGRnYBAABXRUJQVlA4WAoAAAAQAAAAFwAAHwAAQUxQSNAAAAABgDLb1rJ1SM/ngkNyh0ZzT+7W3V0jiSGRGKJkp7l0fsM3NOZLuDunPM+9950hIiZA/V9nxeJYlhW+fQAPhRaMQ38MkW0YECsbMtXKykz9sphbLRApU1XasrJyHcBVthVrAHDdESpq+NWA1/2JKE7i6g+Y24yVD7CDVBaET9S8JECdSo6IsGfJAjEHaTNxLvmONsV+S86UuR3STqJRchdKRF3j/ZLxU6fo6DT3LOPNxlBK7TOQwgr/4HSzcsBdYs2wLlh7rE8/J4g/AD9/Gso1VlA4IIAAAADQBACdASoYACAAPu1ip04ppSMiMBgMATAdiWUAzYXcAHhsUWbwtl+1rQXbXcmAAAD+9CUo92NwEVmqAImkp2ZQpZZmxnP/4qd7NB63bRKm6pYs2p2dz8z/qKJAPTNKcS1N0w0FHyupVTYB+9xTc8OEULWczg59jYLD/lUoVaAAAA==";
 
-const portraitBlur =
-  "data:image/webp;base64,UklGRlABAABXRUJQVlA4WAoAAAAQAAAADwAAFAAAQUxQSKMAAAABgCPbtirl/fbIos4ah1G45ZC655C7Zx6REncxCwZgolsE2vu9dw527y+GEBETYP43OXO02hGm54mkvUgq8VuKV8oY5WZKmlCYk/JNZUmKOmVFMkXpLa8UHoVDo08KlyHWBe4E0riXeD0UGJM+rjHkQzD7CaoAWKTuHbx3z39gSTaa3rn6GknAgyxV69bXewWQLDetQzVtqTasA8rmhpA8AJQAAFZQOCCGAAAAcAQAnQEqEAAVAD7tYqlNqaWjojAIATAdiWMArCDYoLsYkLu3sAQGJ8G+uAAA/uv7d25GzO5sZNVTBvV46dm1egzxe2frbHv7rmLWtHjDL4zkTkAxrJKD6YWoW60r3tPf4UPv1vdWT9tgwXxe8BCvg5P+TYJj1A2ooNsneOxK7nD20K3odAA=";
-
 function SplitName({ text, outline = false }: { text: string; outline?: boolean }) {
   return (
     <span className={outline ? "name-line name-outline" : "name-line"}>
@@ -56,7 +53,7 @@ export function Hero() {
     });
 
     tl.set(".name-char", { yPercent: 115 }, 0);
-    tl.set(".lead, .sub, .ctas, .contactline, .status", { autoAlpha: 0 }, 0);
+    tl.set(".lead, .sub, .ctas, .contactline", { autoAlpha: 0 }, 0);
     tl.to(count, {
       n: 100,
       duration: 0.72,
@@ -68,7 +65,7 @@ export function Hero() {
     tl.to(".curtain-count", { autoAlpha: 0, duration: 0.18 }, "-=0.05");
     tl.to(".curtain-top", { scaleY: 0, duration: 0.55, ease: "power4.inOut" }, "<");
     tl.to(".curtain-bot", { scaleY: 0, duration: 0.55, ease: "power4.inOut" }, "<");
-    tl.set([".hero-l", ".nav", ".figure-tilt", ".idcard-anchor", ".scrollhint"], { autoAlpha: 1 }, "-=0.28");
+    tl.set([".hero-l", ".nav", ".figure-tilt", ".scrollhint"], { autoAlpha: 1 }, "-=0.28");
     tl.to(".name-char", { yPercent: 0, duration: 0.78, stagger: 0.04, ease: "power4.out" }, "<");
     tl.fromTo(
       ".name-outline",
@@ -76,7 +73,6 @@ export function Hero() {
       { clipPath: "inset(0 0% 0 0)", duration: 0.85, ease: "power3.inOut" },
       "<0.12",
     );
-    tl.to(".status", { autoAlpha: 1, duration: 0.4 }, "<");
     if (lead) {
       tl.to(
         lead,
@@ -100,12 +96,6 @@ export function Hero() {
       { y: 0, autoAlpha: 1, filter: "blur(0px)", duration: 0.9, ease: "power3.out" },
       "-=0.7",
     );
-    tl.fromTo(
-      ".idcard",
-      { rotateY: 90, rotateZ: -2, autoAlpha: 0 },
-      { rotateY: 0, rotateZ: -2, autoAlpha: 1, duration: 0.75, ease: "power3.out" },
-      "-=0.5",
-    );
     tl.to([".ctas", ".contactline", ".scrollhint"], { autoAlpha: 1, duration: 0.45, stagger: 0.08 }, "-=0.35");
 
     return () => {
@@ -119,7 +109,6 @@ export function Hero() {
 
     const tilt = root.querySelector<HTMLElement>(".figure-tilt");
     const rings = root.querySelector<HTMLElement>(".rings");
-    const card = root.querySelector<HTMLElement>(".idcard");
     let cx = 0;
     let cy = 0;
     let tx = 0;
@@ -144,9 +133,6 @@ export function Hero() {
         }
         if (rings) {
           rings.style.transform = `translate3d(${tx * 26}px, ${ty * 16}px, 0)`;
-        }
-        if (card) {
-          card.style.transform = `rotate(-2deg) translate3d(${tx * -34}px, ${ty * -18}px, 0) rotateY(${tx * -8}deg)`;
         }
       }
       frame = requestAnimationFrame(loop);
@@ -177,10 +163,6 @@ export function Hero() {
         JAMSHAID
       </div>
       <div className="hero-l">
-        <div className="status">
-          <span className="dot" />
-          <span className="mono">{site.availability}</span>
-        </div>
         <h1 className="name">
           <span className="sr-only">Hassan Jamshaid.</span>
           <span aria-hidden="true">
@@ -244,36 +226,6 @@ export function Hero() {
                 placeholder="blur"
                 blurDataURL={figureBlur}
               />
-            </div>
-          </div>
-          <div className="idcard-anchor">
-            <div className="idcard">
-              <div className="pframe">
-                <span className="ptag">HJ · LAHORE</span>
-                <Image
-                  className="id-portrait"
-                  src="/media/hassan-portrait.webp"
-                  alt=""
-                  width={864}
-                  height={1152}
-                  sizes="244px"
-                  quality={75}
-                  placeholder="blur"
-                  blurDataURL={portraitBlur}
-                />
-                <span className="shade" />
-                <span className="scan" />
-              </div>
-              <div className="idmeta">
-                <div>
-                  <b>Hassan Jamshaid</b>
-                  <div className="mono">Software Engineer</div>
-                </div>
-                <div className="live">
-                  <span className="dot" />
-                  LIVE
-                </div>
-              </div>
             </div>
           </div>
         </div>
