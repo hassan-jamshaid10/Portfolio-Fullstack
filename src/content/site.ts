@@ -202,16 +202,6 @@ export const site = {
     },
     {
       id: "06",
-      title: "Sporttek",
-      company: "Co-founder & Lead Engineer · Jul 2026 – Present",
-      tags: ["Next.js", "TypeScript", "Flutter", "Spring Boot", "PostgreSQL"],
-      summary:
-        "Sports venue discovery and booking for padel, futsal, football, badminton, and cricket, with a player experience and a venue-management panel.",
-      links: { live: "https://www.sporttek.pk/play", repo: null },
-      linkLabel: "Live",
-    },
-    {
-      id: "07",
       title: "LaunchPulse AI",
       company: "Creator & Lead Engineer · Oct 2025 – May 2026",
       tags: ["Next.js", "TypeScript", "tRPC", "PostgreSQL", "Supabase"],
@@ -221,7 +211,7 @@ export const site = {
       linkLabel: "Live",
     },
     {
-      id: "08",
+      id: "07",
       title: "OctaBit Logics",
       company: "Co-founder, CTO & Lead Engineer · Feb 2026 – Present",
       tags: ["Next.js", "TypeScript"],
@@ -231,7 +221,7 @@ export const site = {
       linkLabel: "Live",
     },
     {
-      id: "9",
+      id: "08",
       title: "Sunao Technologies",
       company: "Co-founder, CTO & Lead Engineer · 2026 – Present",
       tags: ["Vue 3", "TypeScript", "Vite"],
@@ -241,7 +231,7 @@ export const site = {
       linkLabel: "Live",
     },
       {
-      id: "10",
+      id: "09",
       title: "Codebase AI",
       company: "Personal",
       tags: ["FastAPI", "LangChain", "RAG", "ChromaDB", "React"],
